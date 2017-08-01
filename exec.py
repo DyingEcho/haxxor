@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 
 usrvars = {}
+import error
 
 def disp(text):
 	global usrvars
@@ -11,12 +12,13 @@ def disp(text):
 			print(usrvars[text])
 		except KeyError:
 			print("ERROR: String " + text + " not found.")
+			exit()
 	else:
 		print(text)
 
 def assn(vartype, name, value):
 	global usrvars
-	if name.startswith("$"): print("WARN: Variable name contains special character!")
+	if name.startswith("$"): error.warn("Variable name contains special character!")
 
 	if vartype == "str":
 		usrvars["$" + name] = value

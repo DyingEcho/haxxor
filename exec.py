@@ -18,13 +18,22 @@ def disp(text):
 
 def assn(vartype, name, value):
 	global usrvars
-	if name.startswith("$"): error.warn("Variable name contains special character!")
+	prefixes = ["$"]
+	for prefix in prefixes:
+		if name.startswith(prefix): error.warn("Variable name contains special character!")
 
 	if vartype == "str":
 		usrvars["$" + name] = value
 
 	if vartype == "in":
 		usrvars["$" + name] = input(value)
+
+	if vartype == "del":
+		for prefix in prefixes:
+			try:
+				usrvars.pop(prefix + name)
+			except KeyError:
+				pass
 
 
 def wait(length):

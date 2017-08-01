@@ -26,11 +26,14 @@ def parse(usrtask):
 		elif usrtask.startswith("in"):
 			usrtask = usrtask[3:]
 			vartype = "in"
+		elif usrtask.startswith("del"):
+			usrtask = usrtask[4:]
+			vartype = "del"
 		else:
 			error.error("Type to assign not recognised!")
 		usrtask = usrtask.split(' "')
 		name = usrtask[0]
-		value = usrtask[1].strip('"')
+		value = usrtask[1].strip('"') if vartype != "del" else ""
 		exec.assn(vartype, name, value)
 
 	elif usrtask.startswith("wait"):

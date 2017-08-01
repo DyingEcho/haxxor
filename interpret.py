@@ -30,5 +30,8 @@ def parse(usrtask):
 		name = usrtask[0]
 		value = usrtask[1].strip('"')
 		exec.assn(vartype, name, value)
+	elif usrtask.startswith("wait"):
+		length = int(usrtask.split(" ")[1])
+		exec.wait(length)
 
 for task in tasks: parse(task)

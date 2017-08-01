@@ -20,3 +20,8 @@ def assn(vartype, name, value):
 
 	if vartype == "str":
 		usrvars["$" + name] = value
+
+
+def wait(length):
+	from time import sleep
+	sleep(length / 1000)

@@ -28,11 +28,5 @@ Temporary Items
 .apdisk
 
 code.hx
-
-.idea/haxxor.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
-*.pyc
-code.hx
+.idea/
+__pycache__/

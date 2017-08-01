@@ -1,15 +1,17 @@
 # haxxor
-My attempt at a programming language. Interpreted to, and run with, Python.
+Haxxor is a programming language I'm making for fun. Eventually it'll be Turing Complete... -ish.
 
-You can view the documentation at specs.md. 
+## Running haxxor code
+I haven't developed it to the point where an executable release would be useful, but you can play around with it by downloading the source code and installing with whatever Python-Executable program you want. Just keep in mind that by the time you've downloaded and set up, it may be out of date.
 
-To run a file:
+Once installed, run it like this:
 ```
-python3 interpret.py script.hx false
+haxxor /path/to/script.hx false
 ```
 
-Or, if you've already installed haxxor:
+You can, of course, run it from the source code directly. Assuming you're in the code directory:
 
 ```
-haxxor script.hx false
+python3 interpret.py /path/to/script.hx false
 ```
+ (You may be wondering what the `false` is for... don't worry, it'll be useful soon. Just use it for now and all will be well.)

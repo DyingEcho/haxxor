@@ -1,5 +1,7 @@
-assn str myVar "Hello"
-assn str myVar2 "there!"
+assn str myVar "Hello there!"
 disp $myVar
-wait 2000
-disp $myVar2
+assn in name "What's your name? >"
+disp ""
+disp "Your name is:"
+wait a
+disp $name

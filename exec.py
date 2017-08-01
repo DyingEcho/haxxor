@@ -23,6 +23,9 @@ def assn(vartype, name, value):
 	if vartype == "str":
 		usrvars["$" + name] = value
 
+	if vartype == "in":
+		usrvars["$" + name] = input(value)
+
 
 def wait(length):
 	from time import sleep

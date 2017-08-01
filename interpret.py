@@ -23,6 +23,9 @@ def parse(usrtask):
 		if usrtask.startswith("str"):
 			usrtask = usrtask[4:]
 			vartype = "str"
+		elif usrtask.startswith("in"):
+			usrtask = usrtask[3:]
+			vartype = "in"
 		else:
 			error.error("Type to assign not recognised!")
 		usrtask = usrtask.split(' "')

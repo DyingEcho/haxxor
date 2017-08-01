@@ -7,12 +7,16 @@ usrvars = {}
 def disp(text):
 	global usrvars
 	if text.startswith("$"):
-		print(usrvars[text])
+		try:
+			print(usrvars[text])
+		except KeyError:
+			print("ERROR: String " + text + " not found.")
 	else:
 		print(text)
 
 def assn(vartype, name, value):
 	global usrvars
+	if name.startswith("$"): print("WARN: Variable name contains special character!")
 
 	if vartype == "str":
 		usrvars["$" + name] = value

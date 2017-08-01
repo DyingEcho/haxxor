@@ -1,4 +1,4 @@
-assn str myVar "hello"
+assn str $myVar "Hello"
+assn str $myVar2 "there!"
 disp $myVar
-assn str myVar "hey"
-disp $myVar
+disp $myVar2

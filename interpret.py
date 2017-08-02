@@ -13,8 +13,20 @@ writeOut = True if writeOut == "true" else False
 with open(script, "r") as f:
 	tasks = f.read().split("\n")
 
+linePointer = 0 #Which line we are on
+
+def findGotoTagLine(tagName):
+	i = 0
+	for task in tasks:
+		if task.startswith("tag"):
+			if tagName == task.split(" ")[1]:
+				return i
+		i+=1
+	return -1
 
 def parse(usrtask):
+	global linePointer
+	
 	if usrtask.startswith("disp"):
 		exec.disp(usrtask.strip("disp ").strip('"'))
 
@@ -46,5 +58,40 @@ def parse(usrtask):
 		except ValueError:
 			error.error("Parameter 1 to wait must be an integer")
 		exec.wait(length)
+	elif usrtask.startswith("if"):
+		tsk = usertask.split(" ")#TODO: FIx this, it will trigger on strings with spaces
+		usertask.pop(0)
+		
+		evaluation=False
+		
+		if tsk[1] == ">":#Probaly more elagant way to do this but good enough...
+			#TODO: Make it work with varaibles, have fun
+			if tsk[0] > tsk[2]:
+				evaluation=True
+		elif tsk[1] == "<":
+			if tsk[0] < tsk[2]:
+				evaluation=True
+		elif tsk[1] == "==":
+			if tsk[0] == tsk[2]:
+				evaluation=True
+		
+		if evaluation:
+			l = findGotoTagLine(tsk[3])
+			if l == -1:
+				pass #TODO: Throw error
+			else:
+				linePointer=l
+	elif usrtask.startswith("goto"):
+		l = findGotoTagLine(usrtask.split(" ")
+		
+		if l == -1:
+				pass #TODO: Throw error
+		else:
+				linePointer=l
+		
+		
+			
+while linePointer <= len(tasks): #TODO: Check if syntax is correct
+	parse[tasks[linePointer]]
+	linePointer+=1
 
-for task in tasks: parse(task)

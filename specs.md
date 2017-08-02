@@ -9,9 +9,9 @@ where `myString` is the text you want printed.
 
 You can also use
 ```
-disp $myVar
+disp $myStr
+disp #myInt
 ```
-where `$myVar` is a string you want printed.
 
 ### Variables
 #### Strings
@@ -21,11 +21,13 @@ assn str myVar "myString"
 ```
 where `myVar` is the variable name (will be `$myVar`) and `"myString"` is what it contains.
 
-Strings are changed like this:
+#### Integers
+Integers are assigned like this:
 ```
 assn str myVar "myString"
 ```
 where `myVar` is the variable name (will be `$myVar`) and `"myString"` is what it contains.
+where `myVar` is the variable name (will be `#myVar`) and it contains 42.
 
 #### Deleting
 You can also delete variables to save memory.

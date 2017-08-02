@@ -23,6 +23,9 @@ def parse(usrtask):
 		if usrtask.startswith("str"):
 			usrtask = usrtask[4:]
 			vartype = "str"
+		elif usrtask.startswith("int"):
+			usrtask = usrtask[4:]
+			vartype = "int"
 		elif usrtask.startswith("in"):
 			usrtask = usrtask[3:]
 			vartype = "in"
@@ -31,7 +34,8 @@ def parse(usrtask):
 			vartype = "del"
 		else:
 			error.error("Type to assign not recognised!")
-		usrtask = usrtask.split(' "')
+
+		usrtask = usrtask.split(' "') if vartype != "int" else usrtask.split(" ")
 		name = usrtask[0]
 		value = usrtask[1].strip('"') if vartype != "del" else ""
 		exec.assn(vartype, name, value)

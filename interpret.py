@@ -67,7 +67,7 @@ def parse(usrtask):
 		if tsk[1] == ">":#Probaly more elagant way to do this but good enough...
 			checkInts = [0,2] #This is there incase you add multiple variable checking later on
 			for asdf in checkInts:
-				if tsk[asdf][0] == "$":
+				if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
 					tsk[asdf] == exec.usrvars[tsk[asdf]]
 			
 			if tsk[0] > tsk[2]:

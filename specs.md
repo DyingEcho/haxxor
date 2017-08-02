@@ -19,14 +19,14 @@ Strings are assigned like this:
 ```
 assn str myVar "myString"
 ```
+
 where `myVar` is the variable name (will be `$myVar`) and `"myString"` is what it contains.
 
 #### Integers
 Integers are assigned like this:
 ```
-assn str myVar "myString"
+assn int myVar 42
 ```
-where `myVar` is the variable name (will be `$myVar`) and `"myString"` is what it contains.
 where `myVar` is the variable name (will be `#myVar`) and it contains 42.
 
 #### Deleting
@@ -51,3 +51,5 @@ Get a string of user input like this:
 assn in myVar "What is your name?"
 ```
 where `myVar` is the variable name (will be `$myVar`) and `What is your name?` is the prompt.
+
+## String Operations

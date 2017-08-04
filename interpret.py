@@ -82,7 +82,7 @@ def parse(usrtask):
 
 		validComparitors = [">","<","=="]
 
-		iii = 0#Current index
+		iii = 0 #Current index
 		for t in tsk: #For every argument inside the if statement
 			if t[0] == "\"" and tsk[iii+1] not in validComparitors: #If its a string and the next value is not a comparitor
 				tsk[iii]+=tsk[iii+1] #Concatinate the two strings that would have split from the spaces
@@ -91,13 +91,12 @@ def parse(usrtask):
 		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
 		for asdf in checkInts:  # For every possible index for an argument
 			if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
-				tsk[asdf] == exec.usrvars[tsk[asdf]]  # Set the comparitor value to the value of the variable
+				print(exec.usrvars[tsk[asdf]])
+				tsk[asdf] = exec.usrvars[tsk[asdf]]  # Set the comparitor value to the value of the variable
 
 		evaluation=False #Weather or not the statement is true
 		
 		if tsk[1] == ">":#Probaly more elagant way to do this but good enough...
-
-			
 			if tsk[0] > tsk[2]:
 				evaluation=True
 		elif tsk[1] == "<":
@@ -106,6 +105,7 @@ def parse(usrtask):
 		elif tsk[1] == "==":
 			if tsk[0] == tsk[2]:
 				evaluation=True
+
 		lastEvaluation = evaluation
 		if evaluation:
 			l = findGotoTagLine(tsk[3])
@@ -123,6 +123,7 @@ def parse(usrtask):
 				error.error("goto " + usrtask + " not found")
 			else:
 				linePointer = l
+
 	elif usrtask.startswith("goto"):
 		l = findGotoTagLine(usrtask.split(" ")[1])
 		

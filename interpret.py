@@ -6,14 +6,17 @@ import exec
 import error
 
 args = sys.argv
-script = args[1]
+try:
+	script = args[1]
+except IndexError:
+	print("No input file specified, assuming script.hx")
+	script = "script.hx"
+
 writeOut = args[2].lower()
+
+
 writeOut = True if writeOut == "true" else False
 
-if script == "":
-	script = "script.hx"
-if writeOut == "":
-	writeOut = True
 
 with open(script, "r") as f:
 	tasks = f.read().split("\n")

@@ -110,7 +110,7 @@ def parse(usrtask):
 		if evaluation:
 			l = findGotoTagLine(tsk[3])
 			if l == -1:
-				pass #TODO: Throw error
+				error.error("No goto found")
 			else:
 				linePointer=l
 	elif usrtask.startswith("else"):
@@ -120,7 +120,7 @@ def parse(usrtask):
 			usrtask = usrtask[:5]
 			l = findGotoTagLine()
 			if l == -1:
-				pass  # TODO: Throw error
+				error.error("No goto found")
 			else:
 				linePointer = l
 	elif usrtask.startswith("goto"):

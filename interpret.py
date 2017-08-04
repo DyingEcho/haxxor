@@ -121,6 +121,6 @@ def parse(usrtask):
 		
 			
 while linePointer <= len(tasks): #TODO: Check if syntax is correct
-	parse([tasks[linePointer]])
+	parse(tasks[linePointer])
 	linePointer+=1
 

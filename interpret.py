@@ -10,6 +10,11 @@ script = args[1]
 writeOut = args[2].lower()
 writeOut = True if writeOut == "true" else False
 
+if script == "":
+	script = "script.hx"
+if writeOut == "":
+	writeOut = True
+
 with open(script, "r") as f:
 	tasks = f.read().split("\n")
 
@@ -34,7 +39,8 @@ def parse(usrtask):
 		exec.disp(usrtask.strip("disp ").strip('"'))
 
 	elif usrtask.startswith("assn"):
-		usrtask = usrtask[5:]
+		usrtask = usrtask[:5]
+
 		if usrtask.startswith("str"):
 			usrtask = usrtask[4:]
 			vartype = "str"
@@ -120,7 +126,7 @@ def parse(usrtask):
 		
 		
 			
-while linePointer <= len(tasks): #TODO: Check if syntax is correct
+while linePointer < len(tasks): #TODO: Check if syntax is correct
 	parse(tasks[linePointer])
 	linePointer+=1
 

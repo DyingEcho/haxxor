@@ -15,6 +15,8 @@ with open(script, "r") as f:
 
 linePointer = 0 #Which line we are on
 
+lastEvaluation = False #Tracks what the result of the last if statement is, this is used in the else statement
+
 def findGotoTagLine(tagName):
 	i = 0
 	for task in tasks:
@@ -26,7 +28,8 @@ def findGotoTagLine(tagName):
 
 def parse(usrtask):
 	global linePointer
-	
+	global lastEvaluation
+
 	if usrtask.startswith("disp"):
 		exec.disp(usrtask.strip("disp ").strip('"'))
 
@@ -90,13 +93,23 @@ def parse(usrtask):
 		elif tsk[1] == "==":
 			if tsk[0] == tsk[2]:
 				evaluation=True
-		
+		lastEvaluation = evaluation
 		if evaluation:
 			l = findGotoTagLine(tsk[3])
 			if l == -1:
 				pass #TODO: Throw error
 			else:
 				linePointer=l
+	elif usrtask.startswith("else"):
+		if not tasks[linePointer-1].startswith("if"):
+			error.error("If statement expected")
+		if lastEvaluation:
+			usrtask = usrtask[:5]
+			l = findGotoTagLine()
+			if l == -1:
+				pass  # TODO: Throw error
+			else:
+				linePointer = l
 	elif usrtask.startswith("goto"):
 		l = findGotoTagLine(usrtask.split(" "))
 		

@@ -1,5 +1,5 @@
 # haxxor by @DyingEcho
-# Copyright ©2017 @DyingEcho. All rights reserved.
+# Copyright 2017 @DyingEcho. All rights reserved.
 
 import sys
 import exec

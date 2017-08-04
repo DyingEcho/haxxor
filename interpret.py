@@ -39,7 +39,7 @@ def parse(usrtask):
 		exec.disp(usrtask.strip("disp ").strip('"'))
 
 	elif usrtask.startswith("assn"):
-		usrtask = usrtask[:5]
+		usrtask = usrtask[5:]
 
 		if usrtask.startswith("str"):
 			usrtask = usrtask[4:]

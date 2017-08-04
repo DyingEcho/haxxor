@@ -58,17 +58,28 @@ def parse(usrtask):
 		except ValueError:
 			error.error("Parameter 1 to wait must be an integer")
 		exec.wait(length)
+
 	elif usrtask.startswith("if"):
-		tsk = usertask.split(" ")#TODO: FIx this, it will trigger on strings with spaces
-		usertask.pop(0)
-		
-		evaluation=False
+		tsk = usrtask.split(" ")#This will split up the arugments, however, this will also split any strings with spaces
+		usrtask.pop(0)
+
+		validComparitors = [">","<","=="]
+
+		iii = 0#Current index
+		for t in tsk: #For every argument inside the if statement
+			if t[0] == "\"" and tsk[iii+1] not in validComparitors: #If its a string and the next value is not a comparitor
+				tsk[iii]+=tsk[iii+1] #Concatinate the two strings that would have split from the spaces
+			iii+=1
+
+		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
+		for asdf in checkInts:  # For every possible index for an argument
+			if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
+				tsk[asdf] == exec.usrvars[tsk[asdf]]  # Set the comparitor value to the value of the variable
+
+		evaluation=False #Weather or not the statement is true
 		
 		if tsk[1] == ">":#Probaly more elagant way to do this but good enough...
-			checkInts = [0,2] #This is there incase you add multiple variable checking later on
-			for asdf in checkInts:
-				if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
-					tsk[asdf] == exec.usrvars[tsk[asdf]]
+
 			
 			if tsk[0] > tsk[2]:
 				evaluation=True
@@ -86,10 +97,10 @@ def parse(usrtask):
 			else:
 				linePointer=l
 	elif usrtask.startswith("goto"):
-		l = findGotoTagLine(usrtask.split(" ")
+		l = findGotoTagLine(usrtask.split(" "))
 		
 		if l == -1:
-				pass #TODO: Throw error
+			pass#TODO: Throw error
 		else:
 				linePointer=l
 		

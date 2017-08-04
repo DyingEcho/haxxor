@@ -11,11 +11,11 @@ try:
 except IndexError:
 	print("No input file specified, assuming script.hx")
 	script = "script.hx"
-
-writeOut = args[2].lower()
-
-
-writeOut = True if writeOut == "true" else False
+try:
+	writeOut = args[2].lower()
+	writeOut = True if writeOut == "true" else False
+except IndexError:
+	writeOut = False
 
 
 with open(script, "r") as f:

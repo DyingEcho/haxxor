@@ -61,7 +61,7 @@ def parse(usrtask):
 
 		usrtask = usrtask.split(' "') if vartype != "int" else usrtask.split(" ")
 		name = usrtask[0]
-		if vartype != "del" or vartype != "in":
+		if vartype != "del" and vartype != "in":
 			value = usrtask[1].strip('"')
 		else:
 			value = ""

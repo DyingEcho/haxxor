@@ -57,7 +57,8 @@ def parse(usrtask):
 			length = int(usrtask.split(" ")[1])
 		except ValueError:
 			error.error("Parameter 1 to wait must be an integer")
-		exec.wait(length)
+		else:
+			exec.wait(length)
 
 	elif usrtask.startswith("if"):
 		tsk = usrtask.split(" ")#This will split up the arugments, however, this will also split any strings with spaces

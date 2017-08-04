@@ -65,7 +65,7 @@ def parse(usrtask):
 
 	elif usrtask.startswith("if"):
 		tsk = usrtask.split(" ")#This will split up the arugments, however, this will also split any strings with spaces
-		usrtask.pop(0)
+		tsk.pop(0)
 
 		validComparitors = [">","<","=="]
 

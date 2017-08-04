@@ -61,7 +61,11 @@ def parse(usrtask):
 
 		usrtask = usrtask.split(' "') if vartype != "int" else usrtask.split(" ")
 		name = usrtask[0]
-		value = usrtask[1].strip('"') if vartype != "del" else ""
+		if vartype != "del" or vartype != "in":
+			value = usrtask[1].strip('"')
+		else:
+			value = ""
+
 		exec.assn(vartype, name, value)
 
 	elif usrtask.startswith("wait"):

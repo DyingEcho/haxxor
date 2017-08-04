@@ -91,7 +91,6 @@ def parse(usrtask):
 		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
 		for asdf in checkInts:  # For every possible index for an argument
 			if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
-				print(exec.usrvars[tsk[asdf]])
 				tsk[asdf] = exec.usrvars[tsk[asdf]]  # Set the comparitor value to the value of the variable
 
 		evaluation=False #Weather or not the statement is true

@@ -82,19 +82,24 @@ def parse(usrtask):
 
 		validComparitors = [">","<","=="]
 
-		iii = 0 #Current index
-		for t in tsk: #For every argument inside the if statement
-			if t[0] == "\"" and tsk[iii+1] not in validComparitors: #If its a string and the next value is not a comparitor
-				tsk[iii]+=tsk[iii+1] #Concatinate the two strings that would have split from the spaces
-			iii+=1
-
 		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
 		for asdf in checkInts:  # For every possible index for an argument
 			if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
 				tsk[asdf] = exec.usrvars[tsk[asdf]]  # Set the comparitor value to the value of the variable
 
 		evaluation=False #Weather or not the statement is true
-		
+
+		iii = 0 #Current index
+		for t in tsk: #For every argument inside the if statement
+			try:
+				lst = tsk[iii+1][-1:]
+				if t[0] == "\"" and lst == "\"": #If its a string literal and the next value is also a string literal
+					tsk[iii]+=tsk[iii+1] #Concatinate the two strings that would have split from the spaces
+					tsk.pop(iii+1)
+			except IndexError:
+				pass
+			iii+=1
+
 		if tsk[1] == ">":#Probaly more elagant way to do this but good enough...
 			if tsk[0] > tsk[2]:
 				evaluation=True
@@ -115,8 +120,8 @@ def parse(usrtask):
 	elif usrtask.startswith("else"):
 		if not tasks[linePointer-1].startswith("if"):
 			error.error("If statement expected")
-		if lastEvaluation:
-			usrtask = usrtask[:5]
+		if not lastEvaluation:
+			usrtask = usrtask[5:]
 			l = findGotoTagLine(usrtask)
 			if l == -1:
 				error.error("goto " + usrtask + " not found")

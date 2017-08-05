@@ -1,6 +1,8 @@
 # haxxor by @DyingEcho
 # Copyright ©2017 @DyingEcho. Some rights reserved.
 
+
+
 def error(msg):
 	print("ERROR: " + msg)
 	exit(1)

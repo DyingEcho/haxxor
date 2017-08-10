@@ -28,7 +28,6 @@ for task in tasks:
 	if task.startswith("tag"):
 		task = task.split(' ')
 		tags[task[1]] = currentLine
-		print("Got tag at line" + str(currentLine))
 
 	currentLine += 1
 
@@ -87,7 +86,6 @@ def parse(usrtask):
 		global tags
 		usrtask = usrtask.split(" ")
 		goToLine = int(tags[usrtask[1]])
-		print("Going to line " + str(goToLine) + " (tag " + usrtask[1] + ")")
 
 		for task in tasks[goToLine:]:
 			parse(task)

@@ -17,4 +17,6 @@ python3 interpret.py /path/to/script.hx false
  (You may be wondering what the `false` is for... don't worry, it'll be useful soon. Just use it for now and all will be well.)
 
 ## Writing haxxor code
-You can read the documentation in [specs.md](specs.md). If you have any questions and a thorough reading of the docs doesn't help, [submit an issue](../../issues).
+You can read the documentation in [specs.md](info/specs.md). If you have any questions and a thorough reading of the docs doesn't help, [submit an issue](../../issues).
+
+There's a custom file type for developing in PyCharm which you can download [here](info/filetype.jar).

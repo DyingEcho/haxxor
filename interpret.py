@@ -5,6 +5,10 @@ import sys
 import exec
 import error
 
+tags = {}
+prefixes = ["$", "#"]
+currentLine = 0
+
 args = sys.argv
 try:
 	script = args[1]
@@ -20,8 +24,19 @@ except IndexError:
 with open(script, "r") as f:
 	tasks = f.read().split("\n")
 
+for task in tasks:
+	if task.startswith("tag"):
+		task = task.split(' ')
+		tags[task[1]] = currentLine
+		print("Got tag at line" + str(currentLine))
+
+	currentLine += 1
+
+tasks.append("END")
 
 def parse(usrtask):
+	global prefixes
+
 	if usrtask.startswith("disp"):
 		exec.disp(usrtask.strip("disp ").strip('"'))
 
@@ -54,4 +69,31 @@ def parse(usrtask):
 			error.error("Parameter 1 to wait must be an integer")
 		exec.wait(length)
 
-for task in tasks: parse(task)
+	elif usrtask.startswith("strop"):
+		usrtask = usrtask[6:]
+		if usrtask.startswith("add"):
+			usrtask = usrtask[4:]
+			opType = "add"
+		else:
+			error.error("Strop command not recognised.")
+
+		usrtask = usrtask.split(' ')
+		firstVar = usrtask[0]
+		secondVar = usrtask[1]
+
+		exec.strop(opType, firstVar, secondVar)
+
+	elif usrtask.startswith("goto"):
+		global tags
+		usrtask = usrtask.split(" ")
+		goToLine = int(tags[usrtask[1]])
+		print("Going to line " + str(goToLine) + " (tag " + usrtask[1] + ")")
+
+		for task in tasks[goToLine:]:
+			parse(task)
+
+	elif usrtask == "END":
+		exit()
+
+for task in tasks:
+	parse(task)

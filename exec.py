@@ -6,6 +6,7 @@ import error
 
 usrvars = {}
 prefixes = ["$", "#"]
+tags = {}
 
 
 def disp(text):
@@ -53,3 +54,7 @@ def assn(vartype, name, value):
 def wait(length):
 	from time import sleep
 	sleep(length / 1000)
+
+def strop(opType, firstVar, secondVar):
+	if opType == "add":
+		usrvars[firstVar] = usrvars[firstVar] + usrvars[secondVar]

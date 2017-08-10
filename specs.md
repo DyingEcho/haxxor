@@ -53,3 +53,30 @@ assn in myVar "What is your name?"
 where `myVar` is the variable name (will be `$myVar`) and `What is your name?` is the prompt.
 
 ## String Operations
+### Concatenation
+Concatenate strings like this:
+ ```
+ strop add $a $b
+ ```
+where `$b` is the string you want to add to the end of `$a`.
+
+
+
+strop add $nameis $name
+assn del name
+disp $nameis
+
+## Gotos and Tags
+### Tags
+Tags can be added like this:
+```
+tag myTag
+```
+where `myTag` is the name of the tag.
+
+### Gotos
+You can jump to a tag like this:
+```
+goto myTag
+```
+where `myTag` is the tag you want to go to.

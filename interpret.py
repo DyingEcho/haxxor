@@ -7,7 +7,6 @@ import error
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
-currentLine = 0  # The line we start at
 
 
 
@@ -123,7 +122,7 @@ def parse(task):
 	elif task == "END":
 		exit()
 
-
+currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 while currentLine < len(tasks):  # While the line we're on is not the last:
 	parse(tasks[currentLine])  # parse the task at the current line in tasks
 	currentLine += 1  # Move on to the next line

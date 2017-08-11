@@ -7,6 +7,8 @@ import error
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
+lastEval = False
+lastTaskWasIf = False
 
 
 
@@ -118,6 +120,26 @@ def parse(task):
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
+
+	elif task.startswith("if"):
+		global lastEval
+		task = task.split('|> ', 1)  # Split on first occurence of "|> "
+		"""
+		By this point, if we started with 
+			"if 7 == 7: goto hi"
+		we would now have
+			["if 7 == 7",  "goto hi"]
+		"""
+		clause = task[0]  # "if 7 == 7"
+		operation = task[1]  # "goto hi"
+
+		clauseCheck = False
+		clause = clause + ": clauseCheck = True"  # "if 7 == 7: clauseCheck = True" So we can run it as python code to eval
+		eval(clause)  # if the clause evals to true, clauseCheck will be True
+
+		if clauseCheck:
+			lastEval = True
+			parse(operation)
 
 	elif task == "END":
 		exit()

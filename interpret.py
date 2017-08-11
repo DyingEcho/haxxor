@@ -8,7 +8,6 @@ import error
 tags = {}
 prefixes = ["$", "#"]
 currentLine = 0
-lastEvaluation = False
 
 args = sys.argv
 try:
@@ -38,7 +37,6 @@ tasks.append("END")
 def parse(usrtask):
 	global prefixes
 	global currentLine
-	global lastEvaluation
 
 	if usrtask.startswith("disp"):
 		exec.disp(usrtask.strip("disp ").strip('"'))

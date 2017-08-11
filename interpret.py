@@ -7,7 +7,7 @@ import error
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
-
+lastEvaluation #The state of the last if statement
 
 
 """
@@ -118,7 +118,54 @@ def parse(task):
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
+	elif task.startswith("if"):
+		task = task.split(
+			" ")  # This will split up the arugments, however, this will also split any strings with spaces
+		task.pop(0)
 
+		validComparitors = [">", "<", "=="]
+
+		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
+		for asdf in checkInts:  # For every possible index for an argument
+			if task[asdf][0] in prefixes:
+				task[asdf] = exec.usrvars[
+					task[asdf]]  # Make it so the interpreter is comparing the values, not the variable name
+
+		evaluation = False  # Weather or not the if statement is true
+
+		i = 0  # Current index
+		for t in task:  # For every argument inside the if statement, This will make sure any strings that where split with the .split gets rejoined
+			try:#I have no clue why this works, it just works
+				lst = task[i + 1][-1:]#The last character
+				if t[0] == "\"" and lst == "\"":  # If its a string literal and the next value is also a string literal
+					task[i] += task[i + 1]  # Concatinate the two strings that would have split from the spaces
+					task.pop(i + 1)
+			except IndexError:
+				pass
+			i+= 1
+
+		if task[1] == ">":  # Probaly more elagant way to do this but good enough...
+			if task[0] > task[2]:
+				evaluation = True
+		elif task[1] == "<": #If the user wants that if statemnt
+			if task[0] < task[2]: #Then check the result
+				evaluation = True #And set evaluation
+		elif task[1] == "==":
+			if task[0] == task[2]:
+				evaluation = True
+
+		lastEvaluation = evaluation
+		if evaluation:
+			l = int(tags[task[3]])
+			currentLine = l #Set the current line to the goto line
+			
+	elif task.startswith("else"):
+		if not tasks[currentLine - 1].startswith("if"):  # If the last line was not if
+			error.error("If statement expected")
+		if not lastEvaluation:  # If the last eval was true
+			task = task[5:]
+			l = int(tags[task])
+			currentLine = l
 	elif task == "END":
 		exit()
 

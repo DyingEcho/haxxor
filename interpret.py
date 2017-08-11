@@ -157,6 +157,13 @@ def parse(task):
 		else:
 			lastEval = False
 
+	elif task.startswith("else"):
+		task = task[8:]  # remove 'else |> '
+		if not lastTaskWasIf:
+			error.error("Else statement must be after if")
+		if not lastEval:
+			parse(task)
+
 
 	elif task == "END":
 		exit()

@@ -7,6 +7,8 @@ import error
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
+lastEval = False
+lastTaskWasIf = False
 
 
 
@@ -118,6 +120,50 @@ def parse(task):
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
+
+	elif task.startswith("if"):
+		global lastEval
+		global lastTaskWasIf
+
+		lastTaskWasIf = True
+		task = task[3:]
+		task = task.split(' |> ', 1)  # Split on first occurence of "|> "
+		"""
+		By this point, if we started with 
+			"if $hello == "hi": goto hi"
+		we would now have
+			["$hello == "hi",  "goto hi"]
+		"""
+		clause = task[0]  # "$hello == "hi""
+		operation = task[1]  # "goto hi"
+
+		clause = clause.split(" ")  #["$hello", "==", ""hi""]
+		counter = 0
+		for part in clause:  # for every item in list ["$hello", "==", ""hi""]
+			for prefix in prefixes:
+				if part.startswith(prefix):
+					if prefix == "$":
+						clause[counter] = '"' + str(exec.usrvars[part]) + '"'  # It's a string so give it quotes, also see else
+					else:
+						clause[counter] = str(exec.usrvars[part])  # replace variables with values - ["hi", "==", ""hi""]
+		counter += 1
+		clause = " ".join(clause)  # ""hi" == "hi""
+
+		clauseCheck = eval(clause)  # use Python's boolean evaluation and store bool result in clauseCheck
+
+		if clauseCheck:
+			lastEval = True
+			parse(operation)  # do the operation
+		else:
+			lastEval = False
+
+	elif task.startswith("else"):
+		task = task[8:]  # remove 'else |> '
+		if not lastTaskWasIf:
+			error.error("Else statement must be after if")
+		if not lastEval:
+			parse(task)
+
 
 	elif task == "END":
 		exit()

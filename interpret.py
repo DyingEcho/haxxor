@@ -7,6 +7,7 @@ import error
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
+currentLine = 0  # The line we start at
 
 
 
@@ -65,6 +66,7 @@ We look at each task in order and do something based on it.
 """
 def parse(task):
 	global prefixes
+	global currentLine
 
 	if task.startswith("disp"):  # displays a string
 		exec.disp(task.strip("disp ").strip('"'))  # remove command and any quotation marks, then pass to exec.disp()
@@ -116,12 +118,12 @@ def parse(task):
 		global tags
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
-
-		for task in tasks[goToLine:]:
-			parse(task)
+		currentLine = goToLine  # Change the line the interpreter is reading
 
 	elif task == "END":
 		exit()
 
-for task in tasks:
-	parse(task)
+
+while currentLine < len(tasks):  # While the line we're on is not the last:
+	parse(tasks[currentLine])  # parse the task at the current line in tasks
+	currentLine += 1  # Move on to the next line

@@ -123,7 +123,7 @@ def parse(task):
 
 	elif task.startswith("if"):
 		global lastEval
-		task = task.split('|> ', 1)  # Split on first occurence of "|> "
+		task = task.split(' |> ', 1)  # Split on first occurence of "|> "
 		"""
 		By this point, if we started with 
 			"if 7 == 7: goto hi"

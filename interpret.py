@@ -123,6 +123,9 @@ def parse(task):
 		exit()
 
 currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
-while currentLine < len(tasks):  # While the line we're on is not the last:
-	parse(tasks[currentLine])  # parse the task at the current line in tasks
-	currentLine += 1  # Move on to the next line
+try:
+	while currentLine < len(tasks):  # While the line we're on is not the last:
+		parse(tasks[currentLine])  # parse the task at the current line in tasks
+		currentLine += 1  # Move on to the next line
+except KeyboardInterrupt:
+	exit()

@@ -7,7 +7,7 @@ import error
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
-
+lastEvaluation #The state of the last if statement
 
 
 """
@@ -147,17 +147,18 @@ def parse(task):
 		if tsk[1] == ">":  # Probaly more elagant way to do this but good enough...
 			if tsk[0] > tsk[2]:
 				evaluation = True
-		elif tsk[1] == "<":
-			if tsk[0] < tsk[2]:
-				evaluation = True
+		elif tsk[1] == "<": #If the user wants that if statemnt
+			if tsk[0] < tsk[2]: #Then check the result
+				evaluation = True #And set evaluation
 		elif tsk[1] == "==":
 			if tsk[0] == tsk[2]:
 				evaluation = True
 
 		lastEvaluation = evaluation
-		if evaluation: #If the if statement is true
+		if evaluation:
 			l = int(tags[tsk[3]])
-			currentLine = l
+			currentLine = l #Set the current line to the goto line
+			
 	elif usrtask.startswith("else"):
 		if not tasks[currentLine - 1].startswith("if"):  # If the last line was not if
 			error.error("If statement expected")

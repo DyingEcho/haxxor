@@ -92,54 +92,6 @@ def parse(usrtask):
 		goToLine = int(tags[usrtask[1]])
 
 		currentLine = goToLine  # Change the line the interpreter will pass to the relevant tag
-
-	elif usrtask.startswith("if"):
-		tsk = usrtask.split(
-			" ")  # This will split up the arugments, however, this will also split any strings with spaces
-		tsk.pop(0)
-
-		validComparitors = [">", "<", "=="]
-
-		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
-		for asdf in checkInts:  # For every possible index for an argument
-			if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
-				tsk[asdf] = exec.usrvars[
-					tsk[asdf]]  # Make it so the interpreter is comparing the values, not the variable name
-
-		evaluation = False  # Weather or not the if statement is true
-
-		iii = 0  # Current index
-		for t in tsk:  # For every argument inside the if statement, This will make sure any strings that where split with the .split gets rejoined
-			try:
-				lst = tsk[iii + 1][-1:]
-				if t[0] == "\"" and lst == "\"":  # If its a string literal and the next value is also a string literal
-					tsk[iii] += tsk[iii + 1]  # Concatinate the two strings that would have split from the spaces
-					tsk.pop(iii + 1)
-			except IndexError:
-				pass
-			iii += 1
-
-		if tsk[1] == ">":  # Probaly more elagant way to do this but good enough...
-			if tsk[0] > tsk[2]:
-				evaluation = True
-		elif tsk[1] == "<":
-			if tsk[0] < tsk[2]:
-				evaluation = True
-		elif tsk[1] == "==":
-			if tsk[0] == tsk[2]:
-				evaluation = True
-
-		lastEvaluation = evaluation
-		if evaluation:
-			l = int(tags[tsk[3]])
-			currentLine = l
-	elif usrtask.startswith("else"):
-		if not tasks[currentLine - 1].startswith("if"):  # If the last line was not if
-			error.error("If statement expected")
-		if not lastEvaluation:  # If the last eval was true
-			usrtask = usrtask[5:]
-			l = int(tags[usrtask])
-			currentLine = l
 	elif usrtask == "END":
 		exit()
 

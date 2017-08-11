@@ -33,8 +33,10 @@ for task in tasks:
 
 tasks.append("END")
 
+
 def parse(usrtask):
 	global prefixes
+	global currentLine
 
 	if usrtask.startswith("disp"):
 		exec.disp(usrtask.strip("disp ").strip('"'))
@@ -87,11 +89,12 @@ def parse(usrtask):
 		usrtask = usrtask.split(" ")
 		goToLine = int(tags[usrtask[1]])
 
-		for task in tasks[goToLine:]:
-			parse(task)
-
+		currentLine = goToLine  # Change the line the interpreter will pass to the relevant tag
 	elif usrtask == "END":
 		exit()
 
-for task in tasks:
-	parse(task)
+
+currentLine = 0  # Reset to 0 so while loop starts from beggining
+while currentLine < len(tasks):
+	parse(tasks[currentLine])
+	currentLine+=1

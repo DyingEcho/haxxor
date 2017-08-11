@@ -104,3 +104,38 @@ You can jump to a tag like this:
 goto myTag
 ```
 where `myTag` is the tag you want to go to.
+
+## File Operations
+### Opening
+You can open a file for reading, writing or appending like so:
+```
+flop open path/to/myFile.txt
+flop open $myFilePath
+```
+You can only open one file at a time.
+
+### Reading
+You can store the content of a file like so:
+```
+flop read $myVar
+```
+
+### Appending
+You can append a line to a file like so:
+```
+flop append "myText"
+flop append $myStr
+```
+
+### Overwriting
+You can overwrite a file like this:
+```
+flop owrite "myText"
+flop owrite $myStr
+```
+
+### Closing
+Finally, it's important to close files once you're finished working on them.
+```
+flop close
+```

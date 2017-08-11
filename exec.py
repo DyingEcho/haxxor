@@ -7,6 +7,7 @@ import error
 usrvars = {}
 prefixes = ["$", "#"]
 tags = {}
+file = None
 
 
 def disp(text):
@@ -55,6 +56,30 @@ def wait(length):
 	from time import sleep
 	sleep(length / 1000)
 
+
 def strop(opType, firstVar, secondVar):
 	if opType == "add":
 		usrvars[firstVar] = usrvars[firstVar] + usrvars[secondVar]
+
+
+def flop(action, param):
+	global usrvars
+	global prefixes
+	global file
+
+	if action == "open":
+		file = open(param, "a+")
+
+	elif action == "close":
+		file.close()
+
+	elif action == "read":
+		usrvars[param] = file.read()
+
+	elif action == "owrite":
+		file.write(param)
+
+	elif action == "append":
+		fileContent = file.read()
+		fileContent = fileContent + "\n" + param
+		file.write(fileContent)

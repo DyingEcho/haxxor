@@ -164,6 +164,26 @@ def parse(task):
 		if not lastEval:
 			parse(task)
 
+	elif task.startswith("flop"):
+		task = task[5:]  # remove 'flop ' from start of task
+		if task.startswith("open"):
+			task = task[5:]
+			action = "open"
+		if task.startswith("close"):
+			task = task[6:]
+			action = "close"
+		if task.startswith("read"):
+			task = task[5:]
+			action = "read"
+		if task.startswith("owrite"):
+			task = task[7:]
+			action = "owrite"
+		if task.startswith("append"):
+			task = task[7:]
+			action = "append"
+
+		exec.flop(action, task)  # pass to flop with the action and the parameter (str, path or nothing)
+
 
 	elif task == "END":
 		exit()

@@ -118,8 +118,8 @@ def parse(task):
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
-	elif usrtask.startswith("if"):
-		task = usrtask.split(
+	elif task.startswith("if"):
+		task = task.split(
 			" ")  # This will split up the arugments, however, this will also split any strings with spaces
 		task.pop(0)
 
@@ -159,12 +159,12 @@ def parse(task):
 			l = int(tags[task[3]])
 			currentLine = l #Set the current line to the goto line
 			
-	elif usrtask.startswith("else"):
+	elif task.startswith("else"):
 		if not tasks[currentLine - 1].startswith("if"):  # If the last line was not if
 			error.error("If statement expected")
 		if not lastEvaluation:  # If the last eval was true
-			usrtask = usrtask[5:]
-			l = int(tags[usrtask])
+			task = task[5:]
+			l = int(tags[task])
 			currentLine = l
 	elif task == "END":
 		exit()

@@ -52,6 +52,30 @@ assn in myVar "What is your name?"
 ```
 where `myVar` is the variable name (will be `$myVar`) and `What is your name?` is the prompt.
 
+### If/Else
+#### If
+An `if` statement allows you to check if a clause is true, and if so, execute a statement.
+You can do it like this:
+```
+if 7 == 7 |> goto sevenIsSeven 
+```
+
+In this example, the interpreter will go to the tag sevenIsSeven because `7==7` evaluates to True.
+#### Else
+An `else` statement will execute its clause if the `if` statement before it evaluated to False.
+```
+if 7 == 7 |> goto sevenIsSeven 
+else |> disp "Logic is on break today."
+```
+#### Operators
+You can use different operators to compare values.
+`==` is for equality.
+`>` is for greater than.
+`<` is for less than.
+`<=` is for less than or equal to.
+`>=` is for greater than or equal to.
+`!=` is for inequality.
+
 ## String Operations
 ### Concatenation
 Concatenate strings like this:

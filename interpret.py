@@ -92,16 +92,16 @@ def parse(task):
 		value = task[1].strip('"') if vartype != "del" else ""  # strip task[1] by " if type isn't del, assign to value
 		exec.assn(vartype, name, value)  # pass to exec.assn()
 
-	elif task.startswith("wait"):  # waits for a certain amount of time
+	elif task.startswith("wait"):  # waits for a certain amount of time TODO: Make this work with variables
 		try:
-			length = int(task.split(" ")[1])
-		except ValueError:
+			length = int(task.split(" ")[1])  # split by spaces and take the second part (the time to wait)
+		except ValueError:  # Couldn't int() it
 			error.error("Parameter 1 to wait must be an integer")
 		exec.wait(length)
 
-	elif task.startswith("strop"):
-		task = task[6:]
-		if task.startswith("add"):
+	elif task.startswith("strop"):  # string operations
+		task = task[6:]  # Get rid of the 'strop ' at the task start
+		if task.startswith("add"):  # concatenate strings
 			task = task[4:]
 			opType = "add"
 		else:

@@ -127,22 +127,22 @@ def parse(task):
 
 		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
 		for asdf in checkInts:  # For every possible index for an argument
-			if tsk[asdf][0] == "$" or tsk[asdf][0] == "#":
+			if tsk[asdf][0] in prefixes:
 				tsk[asdf] = exec.usrvars[
 					tsk[asdf]]  # Make it so the interpreter is comparing the values, not the variable name
 
 		evaluation = False  # Weather or not the if statement is true
 
-		iii = 0  # Current index
+		i = 0  # Current index
 		for t in tsk:  # For every argument inside the if statement, This will make sure any strings that where split with the .split gets rejoined
-			try:
-				lst = tsk[iii + 1][-1:]
+			try:#I have no clue why this works, it just works
+				lst = tsk[i + 1][-1:]#The last character
 				if t[0] == "\"" and lst == "\"":  # If its a string literal and the next value is also a string literal
-					tsk[iii] += tsk[iii + 1]  # Concatinate the two strings that would have split from the spaces
-					tsk.pop(iii + 1)
+					tsk[i] += tsk[i + 1]  # Concatinate the two strings that would have split from the spaces
+					tsk.pop(i + 1)
 			except IndexError:
 				pass
-			iii += 1
+			i+= 1
 
 		if tsk[1] == ">":  # Probaly more elagant way to do this but good enough...
 			if tsk[0] > tsk[2]:
@@ -155,7 +155,7 @@ def parse(task):
 				evaluation = True
 
 		lastEvaluation = evaluation
-		if evaluation:
+		if evaluation: #If the if statement is true
 			l = int(tags[tsk[3]])
 			currentLine = l
 	elif usrtask.startswith("else"):

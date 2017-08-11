@@ -119,44 +119,44 @@ def parse(task):
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
 	elif usrtask.startswith("if"):
-		tsk = usrtask.split(
+		task = usrtask.split(
 			" ")  # This will split up the arugments, however, this will also split any strings with spaces
-		tsk.pop(0)
+		task.pop(0)
 
 		validComparitors = [">", "<", "=="]
 
 		checkInts = [0, 2]  # This is there incase you add multiple variable checking later on
 		for asdf in checkInts:  # For every possible index for an argument
-			if tsk[asdf][0] in prefixes:
-				tsk[asdf] = exec.usrvars[
-					tsk[asdf]]  # Make it so the interpreter is comparing the values, not the variable name
+			if task[asdf][0] in prefixes:
+				task[asdf] = exec.usrvars[
+					task[asdf]]  # Make it so the interpreter is comparing the values, not the variable name
 
 		evaluation = False  # Weather or not the if statement is true
 
 		i = 0  # Current index
-		for t in tsk:  # For every argument inside the if statement, This will make sure any strings that where split with the .split gets rejoined
+		for t in task:  # For every argument inside the if statement, This will make sure any strings that where split with the .split gets rejoined
 			try:#I have no clue why this works, it just works
-				lst = tsk[i + 1][-1:]#The last character
+				lst = task[i + 1][-1:]#The last character
 				if t[0] == "\"" and lst == "\"":  # If its a string literal and the next value is also a string literal
-					tsk[i] += tsk[i + 1]  # Concatinate the two strings that would have split from the spaces
-					tsk.pop(i + 1)
+					task[i] += task[i + 1]  # Concatinate the two strings that would have split from the spaces
+					task.pop(i + 1)
 			except IndexError:
 				pass
 			i+= 1
 
-		if tsk[1] == ">":  # Probaly more elagant way to do this but good enough...
-			if tsk[0] > tsk[2]:
+		if task[1] == ">":  # Probaly more elagant way to do this but good enough...
+			if task[0] > task[2]:
 				evaluation = True
-		elif tsk[1] == "<": #If the user wants that if statemnt
-			if tsk[0] < tsk[2]: #Then check the result
+		elif task[1] == "<": #If the user wants that if statemnt
+			if task[0] < task[2]: #Then check the result
 				evaluation = True #And set evaluation
-		elif tsk[1] == "==":
-			if tsk[0] == tsk[2]:
+		elif task[1] == "==":
+			if task[0] == task[2]:
 				evaluation = True
 
 		lastEvaluation = evaluation
 		if evaluation:
-			l = int(tags[tsk[3]])
+			l = int(tags[task[3]])
 			currentLine = l #Set the current line to the goto line
 			
 	elif usrtask.startswith("else"):

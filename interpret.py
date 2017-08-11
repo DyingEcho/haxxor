@@ -123,23 +123,40 @@ def parse(task):
 
 	elif task.startswith("if"):
 		global lastEval
+		global lastTaskWasIf
+
+		lastTaskWasIf = True
+		task = task[3:]
 		task = task.split(' |> ', 1)  # Split on first occurence of "|> "
 		"""
 		By this point, if we started with 
-			"if 7 == 7: goto hi"
+			"if $hello == "hi": goto hi"
 		we would now have
-			["if 7 == 7",  "goto hi"]
+			["$hello == "hi",  "goto hi"]
 		"""
-		clause = task[0]  # "if 7 == 7"
+		clause = task[0]  # "$hello == "hi""
 		operation = task[1]  # "goto hi"
 
-		clauseCheck = False
-		clause = clause + ": clauseCheck = True"  # "if 7 == 7: clauseCheck = True" So we can run it as python code to eval
-		eval(clause)  # if the clause evals to true, clauseCheck will be True
+		clause = clause.split(" ")  #["$hello", "==", ""hi""]
+		counter = 0
+		for part in clause:  # for every item in list ["$hello", "==", ""hi""]
+			for prefix in prefixes:
+				if part.startswith(prefix):
+					if prefix == "$":
+						clause[counter] = '"' + str(exec.usrvars[part]) + '"'  # It's a string so give it quotes, also see else
+					else:
+						clause[counter] = str(exec.usrvars[part])  # replace variables with values - ["hi", "==", ""hi""]
+		counter += 1
+		clause = " ".join(clause)  # ""hi" == "hi""
+
+		clauseCheck = eval(clause)  # use Python's boolean evaluation and store bool result in clauseCheck
 
 		if clauseCheck:
 			lastEval = True
-			parse(operation)
+			parse(operation)  # do the operation
+		else:
+			lastEval = False
+
 
 	elif task == "END":
 		exit()

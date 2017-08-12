@@ -12,58 +12,9 @@ lastTaskWasIf = False
 
 
 
-"""
-STEP 1: EVALUATE ARGUMENTS
-We read through system arguments passed to the interpreter to decide how to run our code.
-"""
-args = sys.argv  # get a string with everything after the command to run this interpreter
-try:
-	script = args[1]  # the location of the script to run
-except IndexError:  # not specified
-	error.warn("No input file specified, assuming ./script.hx")
-	script = "script.hx"
-try:
-	writeOut = args[2].lower()  # do we write the meaning of the script to a python file or run it?
-	writeOut = True if writeOut == "true" else False  # if the user says "true" set writeOut to True, otherwise False
-except IndexError:  # not specified
-	error.warn("WriteOut not specified, assuming False")
-	writeOut = False
-
-
 
 """
-STEP 2: GET LIST OF COMMANDS
-We get a list of commands ('tasks') that we need to interpret into Python code to run or write to a file.
-"""
-try:
-	with open(script, "r") as f:
-		tasks = f.read().split("\n")  # create task list by splitting on newlines
-except FileNotFoundError:  # no such file!
-	error.error("File " + script + "not found")
-except:
-	error.error("Generic error reading file" + script)
-
-
-
-"""
-STEP 3: FIND TAGS
-We create a dictionary of tags that we can goto later.
-"""
-currentLine = 0  # we use this to store the line number of any tags we find, by incrementing it each line
-for task in tasks:
-	if task.startswith("tag"):
-		task = task.split(' ')
-		tags[task[1]] = currentLine  # add entry to tags with key as tag name and value as line number
-
-	currentLine += 1
-
-tasks.append("END")  # so we know to end the script after a goto, otherwise we'd go back once script ended post-goto
-
-
-
-"""
-STEP 4: PARSE TASKS
-We look at each task in order and do something based on it.
+PARSER FOR COMMANDS BELOW, FOR INITIAL LOGIC SCROLL FURTHER DOWN
 """
 def parse(task):
 	global prefixes
@@ -71,6 +22,7 @@ def parse(task):
 
 	if task.startswith("disp"):  # displays a string
 		exec.disp(task.strip("disp ").strip('"'))  # remove command and any quotation marks, then pass to exec.disp()
+
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
 		task = task[5:]
@@ -94,12 +46,14 @@ def parse(task):
 		value = task[1].strip('"') if vartype != "del" else ""  # strip task[1] by " if type isn't del, assign to value
 		exec.assn(vartype, name, value)  # pass to exec.assn()
 
+
 	elif task.startswith("wait"):  # waits for a certain amount of time TODO: Make this work with variables
 		try:
 			length = int(task.split(" ")[1])  # split by spaces and take the second part (the time to wait)
 		except ValueError:  # Couldn't int() it
 			error.error("Parameter 1 to wait must be an integer")
 		exec.wait(length)
+
 
 	elif task.startswith("strop"):  # string operations
 		task = task[6:]  # Get rid of the 'strop ' at the task start
@@ -115,11 +69,13 @@ def parse(task):
 
 		exec.strop(opType, firstVar, secondVar)
 
+
 	elif task.startswith("goto"):
 		global tags
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
+
 
 	elif task.startswith("if"):
 		global lastEval
@@ -157,12 +113,14 @@ def parse(task):
 		else:
 			lastEval = False
 
+
 	elif task.startswith("else"):
 		task = task[8:]  # remove 'else |> '
 		if not lastTaskWasIf:
 			error.error("Else statement must be after if")
 		if not lastEval:
 			parse(task)
+
 
 	elif task.startswith("flop"):
 		task = task[5:]  # remove 'flop ' from start of task
@@ -185,13 +143,121 @@ def parse(task):
 		exec.flop(action, task)  # pass to flop with the action and the parameter (str, path or nothing)
 
 
+	elif task.startswith("nop"):
+		task = task[4:]  # remove 'nop ' from start of task
+		if task.startswith("add"):
+			task = task[4:]
+			action = "add"
+		if task.startswith("sub"):
+			task = task[4:]
+			action = "sub"
+		if task.startswith("div"):
+			task = task[4:]
+			action = "div"
+		if task.startswith("mult"):
+			task = task[5:]
+			action = "mult"
+		if task.startswith("exp"):
+			task = task[4:]
+			action = "exp"
+		if task.startswith("mod"):
+			task = task[4:]
+			action = "mod"
+
+		exec.nop(action, task)  # pass to flop with the action and the parameters
+
+
 	elif task == "END":
 		exit()
 
-currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
-try:
-	while currentLine < len(tasks):  # While the line we're on is not the last:
-		parse(tasks[currentLine])  # parse the task at the current line in tasks
-		currentLine += 1  # Move on to the next line
-except KeyboardInterrupt:
-	exit()
+
+
+def getLiteralList(obj_list):
+	import re
+	import itertools
+
+	regex = '\"[^\"]*\"'
+	literals = re.findall(regex, obj_list)
+	variables = re.split(regex, obj_list)
+	print(literals)
+	print(variables)
+	counter = 0
+	listStartsWith = 0
+	for obj in variables:  # sometimes we get empty strs with the variable split, this removes them
+		obj.strip(" ")
+		if obj == "":
+			variables.pop(counter)
+			listStartsWith += 1
+	if listStartsWith > 0: listStartsWith = "var"
+	counter = 0
+	print(literals)
+	print(variables)
+	for var in variables: variables[counter] = exec.usrvars[var]
+	ret = list(
+		filter(None, sum(itertools.zip_longest(variables, literals), ()))) if listStartsWith == "var" \
+		else list(filter(None, sum(itertools.zip_longest(literals, variables), ())))  # alternately merge the 2 lists
+	return ret
+
+
+
+
+if __name__ == "__main__":
+	"""
+	STEP 1: EVALUATE ARGUMENTS
+	We read through system arguments passed to the interpreter to decide how to run our code.
+	"""
+	args = sys.argv  # get a string with everything after the command to run this interpreter
+	try:
+		script = args[1]  # the location of the script to run
+	except IndexError:  # not specified
+		error.warn("No input file specified, assuming ./script.hx")
+		script = "script.hx"
+	try:
+		writeOut = args[2].lower()  # do we write the meaning of the script to a python file or run it?
+		writeOut = True if writeOut == "true" else False  # if the user says "true" set writeOut to True, otherwise False
+	except IndexError:  # not specified
+		error.warn("WriteOut not specified, assuming False")
+		writeOut = False
+
+
+
+	"""
+	STEP 2: GET LIST OF COMMANDS
+	We get a list of commands ('tasks') that we need to interpret into Python code to run or write to a file.
+	"""
+	try:
+		with open(script, "r") as f:
+			tasks = f.read().split("\n")  # create task list by splitting on newlines
+	except FileNotFoundError:  # no such file!
+		error.error("File " + script + "not found")
+	except:
+		error.error("Generic error reading file" + script)
+
+
+
+	"""
+	STEP 3: FIND TAGS
+	We create a dictionary of tags that we can goto later.
+	"""
+	currentLine = 0  # we use this to store the line number of any tags we find, by incrementing it each line
+	for task in tasks:
+		if task.startswith("tag"):
+			task = task.split(' ')
+			tags[task[1]] = currentLine  # add entry to tags with key as tag name and value as line number
+
+		currentLine += 1
+
+	tasks.append("END")  # so we know to end the script after a goto, otherwise we'd go back once script ended post-goto
+
+
+
+	"""
+	STEP 4: START PARSING
+	"""
+	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
+	try:
+		while currentLine < len(tasks):  # While the line we're on is not the last:
+			parse(tasks[currentLine])  # parse the task at the current line in tasks
+			currentLine += 1  # Move on to the next line
+	except KeyboardInterrupt:
+		exit()

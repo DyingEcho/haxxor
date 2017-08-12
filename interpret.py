@@ -70,7 +70,7 @@ def parse(task):
 	global currentLine
 
 	if task.startswith("disp"):  # displays a string
-		exec.disp(getValue(task.strip("disp ")))  # remove command and any quotation marks, then pass to exec.disp()
+		exec.disp(task.strip("disp ").strip('"'))  # remove command and any quotation marks, then pass to exec.disp()
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
 		task = task[5:]
@@ -91,11 +91,14 @@ def parse(task):
 
 		task = task.split(' "') if vartype != "int" else task.split(" ")  # split by space if type is int, otherwise by "
 		name = task[0]  # name of the variab;e
-		value = getValue(task[1]) if vartype != "str" else getValue('"' + task[1])
+		value = task[1].strip('"') if vartype != "del" else ""  # strip task[1] by " if type isn't del, assign to value
 		exec.assn(vartype, name, value)  # pass to exec.assn()
 
-	elif task.startswith("wait"):  # waits for a certain amount of time
-		length = getValue(task.split(" ")[1])  # split by spaces and take the second part (the time to wait)
+	elif task.startswith("wait"):  # waits for a certain amount of time TODO: Make this work with variables
+		try:
+			length = int(task.split(" ")[1])  # split by spaces and take the second part (the time to wait)
+		except ValueError:  # Couldn't int() it
+			error.error("Parameter 1 to wait must be an integer")
 		exec.wait(length)
 
 	elif task.startswith("strop"):  # string operations
@@ -107,7 +110,7 @@ def parse(task):
 			error.error("Strop command not recognised.")
 
 		task = task.split(' ')
-		firstVar = getValue(task[0])
+		firstVar = task[0]
 		secondVar = task[1]
 
 		exec.strop(opType, firstVar, secondVar)
@@ -134,7 +137,7 @@ def parse(task):
 		clause = task[0]  # "$hello == "hi""
 		operation = task[1]  # "goto hi"
 
-		clause = clause.split(" ")  # ["$hello", "==", ""hi""]
+		clause = clause.split(" ")  #["$hello", "==", ""hi""]
 		counter = 0
 		for part in clause:  # for every item in list ["$hello", "==", ""hi""]
 			for prefix in prefixes:
@@ -150,7 +153,7 @@ def parse(task):
 
 		if clauseCheck:
 			lastEval = True
-			parse(operation)  # do the operation
+			parse(operation)  # do the operation
 		else:
 			lastEval = False
 
@@ -184,23 +187,6 @@ def parse(task):
 
 	elif task == "END":
 		exit()
-
-
-
-def getValue(item):
-	for prefix in prefixes:
-		if item.startswith(prefix):
-			return exec.usrvars[item]
-	if item.startswith('"') and item.endswith('"'):
-		item = str(item.strip('"'))
-		return item
-	try:
-		item = int(item)
-		return item
-	except ValueError:
-		error.error("Item" + str(item) + " could not be resolved into anything meaningful.")
-
-
 
 currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 try:

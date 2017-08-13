@@ -192,12 +192,12 @@ def getLiteralList(objList):
 	for obj in literals:  # sometimes we get empty strs with the literal split, this removes them
 		literals[counter] = obj.strip(" ")  # remove any spaces at the start or end
 		if obj != "":
-			modLiterals.append(obj)  # only append if it's not empty
+			modLiterals.append(literals[counter])  # only append if it's not empty
 		else:
 			listStartsWith += 1  # it's empty so we can increment it - trust my logic on this
 		counter += 1
-	print("Literals2: " + str(literals))
 	literals = modLiterals  # update variabes safely outside the for loop
+	print("Literals2: " + str(literals))
 
 	if listStartsWith > 0: listStartsWith = "lit"  # trust my logic!
 
@@ -211,6 +211,7 @@ def getLiteralList(objList):
 				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
 			except ValueError:
 				error.error("Could not get anything meaningful from " + obj)  # not a string, not an int
+		counter += 1
 
 
 	ret = list(

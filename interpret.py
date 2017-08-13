@@ -9,6 +9,7 @@ tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
 lastEval = False
 lastTaskWasIf = False
+currentLine = 0
 
 
 
@@ -21,7 +22,8 @@ def parse(task):
 	global currentLine
 
 	if task.startswith("disp"):  # displays a string
-		exec.disp(task.strip("disp ").strip('"'))  # remove command and any quotation marks, then pass to exec.disp()
+		task = task[5:]  # remove 'disp ' from start
+		exec.disp(getLiteral(task))  # Pass literal to exec.disp()
 
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
@@ -42,17 +44,16 @@ def parse(task):
 			error.error("Type to assign not recognised!")
 
 		task = task.split(' "') if vartype != "int" else task.split(" ")  # split by space if type is int, otherwise by "
-		name = task[0]  # name of the variab;e
-		value = task[1].strip('"') if vartype != "del" else ""  # strip task[1] by " if type isn't del, assign to value
+		task[1] = '"' + task[1] if vartype == "str" else task[1]  # replace the quote that was removed in the above split
+		name = task[0]  # name of the variable
+		value = getLiteral(task[1]) if vartype != "del" else ""  # get literal of task[1] if type isn't del, assign to value
 		exec.assn(vartype, name, value)  # pass to exec.assn()
 
 
 	elif task.startswith("wait"):  # waits for a certain amount of time TODO: Make this work with variables
-		try:
-			length = int(task.split(" ")[1])  # split by spaces and take the second part (the time to wait)
-		except ValueError:  # Couldn't int() it
-			error.error("Parameter 1 to wait must be an integer")
-		exec.wait(length)
+		task = task[5:]  # remove 'wait ' from start of task
+		length = getLiteral(task)  # get the literal int of the time to wait
+		exec.wait(length)  # pass to exec.wait()
 
 
 	elif task.startswith("strop"):  # string operations
@@ -63,11 +64,9 @@ def parse(task):
 		else:
 			error.error("Strop command not recognised.")
 
-		task = task.split(' ')
-		firstVar = task[0]
-		secondVar = task[1]
+		stringList = getLiteralList(task)
 
-		exec.strop(opType, firstVar, secondVar)
+		exec.strop(opType, stringList[0], stringList[1])
 
 
 	elif task.startswith("goto"):
@@ -172,31 +171,57 @@ def parse(task):
 
 
 
-def getLiteralList(obj_list):
-	import re
+def getLiteralList(objList):
+	import re  # we need regex to determine what is a variable and what is a literal
 	import itertools
+	regex = '[$#]\w*'  # https://regex101.com/r/is4StU/2 for explanation
 
-	regex = '\"[^\"]*\"'
-	literals = re.findall(regex, obj_list)
-	variables = re.split(regex, obj_list)
-	print(literals)
-	print(variables)
+
+	variables = re.findall(regex, objList)  # list of variables
+	print("Variables: " + str(variables))
 	counter = 0
-	listStartsWith = 0
-	for obj in variables:  # sometimes we get empty strs with the variable split, this removes them
-		obj.strip(" ")
-		if obj == "":
-			variables.pop(counter)
-			listStartsWith += 1
-	if listStartsWith > 0: listStartsWith = "var"
+	for var in variables: variables[counter] = exec.usrvars[var]  # replace the variable names with the values
+
+
+	literals = re.split(regex, objList)  # list of literals
+	print("Literals1: " + str(literals))
 	counter = 0
-	print(literals)
-	print(variables)
-	for var in variables: variables[counter] = exec.usrvars[var]
+	listStartsWith = 0  # so we know how to properly merge the 2 lists once we're done
+	modLiterals = []  # we will modify this in the for loop to prevent interference when removing list items
+
+	for obj in literals:  # sometimes we get empty strs with the literal split, this removes them
+		literals[counter] = obj.strip(" ")  # remove any spaces at the start or end
+		if obj != "":
+			modLiterals.append(obj)  # only append if it's not empty
+		else:
+			listStartsWith += 1  # it's empty so we can increment it - trust my logic on this
+		counter += 1
+	print("Literals2: " + str(literals))
+	literals = modLiterals  # update variabes safely outside the for loop
+
+	if listStartsWith > 0: listStartsWith = "lit"  # trust my logic!
+
+	counter = 0
+	for obj in literals:
+		print(obj)
+		if obj.startswith('"') and obj.endswith('"'):  # it's a string
+			literals[counter] = obj.strip('"')  # remove any quotes from front and back
+		else:  # it's either an int or unrecognised
+			try:
+				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
+			except ValueError:
+				error.error("Could not get anything meaningful from " + obj)  # not a string, not an int
+
+
 	ret = list(
-		filter(None, sum(itertools.zip_longest(variables, literals), ()))) if listStartsWith == "var" \
-		else list(filter(None, sum(itertools.zip_longest(literals, variables), ())))  # alternately merge the 2 lists
+		filter(None, sum(itertools.zip_longest(literals, variables), ()))) if listStartsWith == "lit" \
+		else list(filter(None, sum(itertools.zip_longest(variables, literals), ())))  # alternately merge the 2 lists
 	return ret
+
+
+
+def getLiteral(unParsedObj):
+	return getLiteralList(unParsedObj)[0]  # for getting one result only
 
 
 

@@ -22,7 +22,7 @@ def disp(text):
 		try:
 			print(str(usrvars[text]))
 		except KeyError:
-			print("ERROR: String " + text + " not found.")
+			error.error("String " + text + " not found")
 			exit()
 	else:
 		print(text)

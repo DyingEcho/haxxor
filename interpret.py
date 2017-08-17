@@ -2,8 +2,10 @@
 # Copyright ©2017 @DyingEcho. All rights reserved.
 
 import sys
-import exec
+
 import error
+import exec
+import parse
 
 tags = {}  # dictionary of tags. key is name, value is line number.
 prefixes = ["$", "#"]  # so we can check if something is a variable
@@ -17,13 +19,13 @@ currentLine = 0
 """
 PARSER FOR COMMANDS BELOW, FOR INITIAL LOGIC SCROLL FURTHER DOWN
 """
-def parse(task):
+def decide(task):
 	global prefixes
 	global currentLine
 
 	if task.startswith("disp"):  # displays a string
 		task = task[5:]  # remove 'disp ' from start
-		exec.disp(getLiteral(task))  # Pass literal to exec.disp()
+		exec.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
 
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
@@ -46,13 +48,13 @@ def parse(task):
 		task = task.split(' "') if vartype != "int" else task.split(" ")  # split by space if type is int, otherwise by "
 		task[1] = '"' + task[1] if vartype == "str" else task[1]  # replace the quote that was removed in the above split
 		name = task[0]  # name of the variable
-		value = getLiteral(task[1]) if vartype != "del" else ""  # get literal of task[1] if type isn't del, assign to value
+		value = parse.getLiteral(task[1]) if vartype != "del" else ""  # get literal of task[1] if type isn't del, assign to value
 		exec.assn(vartype, name, value)  # pass to exec.assn()
 
 
 	elif task.startswith("wait"):  # waits for a certain amount of time TODO: Make this work with variables
 		task = task[5:]  # remove 'wait ' from start of task
-		length = getLiteral(task)  # get the literal int of the time to wait
+		length = parse.getLiteral(task)  # get the literal int of the time to wait
 		exec.wait(length)  # pass to exec.wait()
 
 
@@ -64,7 +66,7 @@ def parse(task):
 		else:
 			error.error("Strop command not recognised.", currentLine)
 
-		stringList = getLiteralList(task)
+		stringList = parse.getLiteralList(task)
 
 		exec.strop(opType, stringList[0], stringList[1])
 
@@ -95,9 +97,9 @@ def parse(task):
 		clause = clause.split(" ")  #["$hello", "==", ""hi""]
 		counter = 0
 		for part in clause:  # for every item in list ["$hello", "==", ""hi""]
-			literal = getLiteral(part, removeQuotes=False, exitIfMeaningless=False)
-			clause[counter] = getLiteral(part, removeQuotes=False, exitIfMeaningless=False) if literal is not False else clause[counter]
-			# getLiteral returns False if it couldn't make sense of it. basically this ignores stupid stuff. story of my life.
+			literal = parse.getLiteral(part, removeQuotes=False, exitIfMeaningless=False)
+			clause[counter] = parse.getLiteral(part, removeQuotes=False, exitIfMeaningless=False) if literal is not False else clause[counter]
+			# parse.getLiteral returns False if it couldn't make sense of it. basically this ignores stupid stuff. story of my life.
 			counter += 1
 		clause = " ".join(str(clause))  # ""hi" == "hi""
 
@@ -105,7 +107,7 @@ def parse(task):
 
 		if clauseCheck:
 			lastEval = True
-			parse(operation)  # do the operation
+			decide(operation)  # do the operation
 		else:
 			lastEval = False
 
@@ -115,7 +117,7 @@ def parse(task):
 		if not lastTaskWasIf:
 			error.error("Else statement must be after if", currentLine)
 		if not lastEval:
-			parse(task)
+			decide(task)
 
 
 	elif task.startswith("flop"):
@@ -177,69 +179,6 @@ def parse(task):
 		error.error("Unknown statement: " + task, currentLine)
 
 
-
-def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
-	import re  # we need regex to determine what is a variable and what is a literal
-	import itertools
-	regex = '[$#]\w*'  # https://regex101.com/r/is4StU/4 for explanation
-
-
-	variables = re.findall(regex, objList)  # list of variables
-	counter = 0
-	for var in variables:
-		var = exec.usrvars[var]
-		if isinstance(var, str):  # it's a string
-			var = var if removeQuotes else '"' + var + '"'  # if not removeQuotes, add quotes to each end
-
-		variables[counter] = var  # replace the variable names with the values
-		counter += 1
-
-
-	literals = re.split(regex, objList)  # list of literals
-	counter = 0
-	listStartsWith = 0  # so we know how to properly merge the 2 lists once we're done
-	modLiterals = []  # we will modify this in the for loop to prevent interference when removing list items
-
-	for obj in literals:  # sometimes we get empty strs with the literal split, this removes them
-		literals[counter] = obj.strip(" ")  # remove any spaces at the start or end
-		if obj != "" and obj is not None:
-			modLiterals.append(literals[counter])  # only append if it's not empty
-		else:
-			listStartsWith += 1  # it's empty so we can increment it - trust my logic on this
-		counter += 1
-	literals = modLiterals  # update variabes safely outside the for loop
-
-	if listStartsWith > 0: listStartsWith = "lit"  # trust my logic!
-
-	counter = 0
-	for obj in literals:
-		if obj.startswith('"') and obj.endswith('"'):  # it's a string
-			literals[counter] = obj.strip('"') if removeQuotes else obj  # remove any quotes from front and back
-		else:  # it's either an int or unrecognised
-			try:
-				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
-			except ValueError:
-				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, currentLine, doExit=False)  # not a string, not an int
-				return False
-		counter += 1
-
-
-	ret = list(
-		filter(None, sum(itertools.zip_longest(literals, variables), ()))) if listStartsWith == "lit" \
-		else list(filter(None, sum(itertools.zip_longest(variables, literals), ())))  # alternately merge the 2 lists
-	return ret
-
-
-
-def getLiteral(unParsedObj, removeQuotes=True, exitIfMeaningless=True):
-	try:
-		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)[0]  # for getting one result only
-	except TypeError:  # it returns 'false'
-		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)
-
-
-
-
 if __name__ == "__main__":
 	"""
 	STEP 1: EVALUATE ARGUMENTS
@@ -296,7 +235,7 @@ if __name__ == "__main__":
 	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 	try:
 		while currentLine < len(tasks):  # While the line we're on is not the last:
-			parse(tasks[currentLine])  # parse the task at the current line in tasks
+			decide(tasks[currentLine])  # decide the task at the current line in tasks
 			currentLine += 1  # Move on to the next line
 	except KeyboardInterrupt:
 		exit()

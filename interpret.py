@@ -135,6 +135,8 @@ def parse(task):
 		if task.startswith("append"):
 			task = task[7:]
 			action = "append"
+		else:
+			error.error("Unknown action to flop: " + task)
 
 		exec.flop(action, task)  # pass to flop with the action and the parameter (str that is either path or nothing)
 
@@ -159,12 +161,20 @@ def parse(task):
 		if task.startswith("mod"):
 			task = task[4:]
 			action = "mod"
+		else:
+			error.error("Unknown action to nop: " + task)
 
 		exec.nop(action, task)  # pass to nop with the action and the parameters
 
 
 	elif task == "END":
 		exit()
+
+	elif task.strip(" ") == "":
+		pass
+
+	else:
+		error.error("Unknown statement: " + task)
 
 
 
@@ -192,14 +202,14 @@ def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 
 	for obj in literals:  # sometimes we get empty strs with the literal split, this removes them
 		literals[counter] = obj.strip(" ")  # remove any spaces at the start or end
-		if obj != "" and obj != None:
+		if obj != "" and obj is not None:
 			modLiterals.append(literals[counter])  # only append if it's not empty
 		else:
 			listStartsWith += 1  # it's empty so we can increment it - trust my logic on this
 		counter += 1
 	literals = modLiterals  # update variabes safely outside the for loop
 
-	if listStartsWith > 0: listStartsWith = "lit"  # trust my logic!
+	if listStartsWith > 0: listStartsWith = "lit"  # trust my logic!
 
 	counter = 0
 	for obj in literals:
@@ -209,7 +219,7 @@ def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 			try:
 				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
 			except ValueError:
-				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, doExit=False)  # not a string, not an int
+				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, doExit=False)  # not a string, not an int
 				return False
 		counter += 1
 

@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 
 import error
+import parse
 
 usrvars = {}
 prefixes = ["$", "#"]
@@ -11,24 +12,11 @@ file = None
 
 
 def disp(text):
-	global prefixes
-	global usrvars
-
-	isVar = 0
-	for prefix in prefixes:
-		if text.startswith(prefix): isVar += 1
-
-	if isVar > 0:
-		try:
-			print(str(usrvars[text]))
-		except KeyError:
-			error.error("String " + text + " not found")
-			exit()
-	else:
-		print(text)
+	print(text)
 
 
 def assn(vartype, name, value):
+	# Because this sets a variable that doesn't already exist, we have to do it the clunky way instead of getLiteral()
 	global usrvars
 	global prefixes
 
@@ -57,9 +45,9 @@ def wait(length):
 	sleep(length / 1000)
 
 
-def strop(opType, firstVar, secondVar):
+def strop(opType, origin, param):
 	if opType == "add":
-		usrvars[firstVar] = usrvars[firstVar] + usrvars[secondVar]
+		usrvars[origin] = usrvars[origin] + param
 
 
 def flop(action, param):

@@ -66,9 +66,13 @@ def decide(task):
 		else:
 			error.error("Strop command not recognised.", currentLine)
 
-		stringList = parse.getLiteralList(task)
+		task = task.split(" ", 1)
+		try:
+			origin = exec.usrvars[task[0]]  # doing this without getLiteral() because it HAS to be a variable
+		except KeyError:
+			error.error("Parameter 0 to 'strop add' must be a string variable", currentLine)
 
-		exec.strop(opType, stringList[0], stringList[1])
+		exec.strop(opType, origin, parse.getLiteralList(task[1]))  # third param here is the literal form of the second strop add param
 
 
 	elif task.startswith("goto"):

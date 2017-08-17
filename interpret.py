@@ -41,7 +41,7 @@ def parse(task):
 			task = task[4:]
 			vartype = "del"
 		else:
-			error.error("Type to assign not recognised!")
+			error.error("Type to assign not recognised!", currentLine)
 
 		task = task.split(' "') if vartype != "int" else task.split(" ")  # split by space if type is int, otherwise by "
 		task[1] = '"' + task[1] if vartype == "str" else task[1]  # replace the quote that was removed in the above split
@@ -62,7 +62,7 @@ def parse(task):
 			task = task[4:]
 			opType = "add"
 		else:
-			error.error("Strop command not recognised.")
+			error.error("Strop command not recognised.", currentLine)
 
 		stringList = getLiteralList(task)
 
@@ -113,7 +113,7 @@ def parse(task):
 	elif task.startswith("else"):
 		task = task[8:]  # remove 'else |> '
 		if not lastTaskWasIf:
-			error.error("Else statement must be after if")
+			error.error("Else statement must be after if", currentLine)
 		if not lastEval:
 			parse(task)
 
@@ -136,7 +136,7 @@ def parse(task):
 			task = task[7:]
 			action = "append"
 		else:
-			error.error("Unknown action to flop: " + task)
+			error.error("Unknown action to flop: " + task, currentLine)
 
 		exec.flop(action, task)  # pass to flop with the action and the parameter (str that is either path or nothing)
 
@@ -162,7 +162,7 @@ def parse(task):
 			task = task[4:]
 			action = "mod"
 		else:
-			error.error("Unknown action to nop: " + task)
+			error.error("Unknown action to nop: " + task, currentLine)
 
 		exec.nop(action, task)  # pass to nop with the action and the parameters
 
@@ -174,7 +174,7 @@ def parse(task):
 		pass
 
 	else:
-		error.error("Unknown statement: " + task)
+		error.error("Unknown statement: " + task, currentLine)
 
 
 
@@ -219,7 +219,7 @@ def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 			try:
 				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
 			except ValueError:
-				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, doExit=False)  # not a string, not an int
+				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, currentLine, doExit=False)  # not a string, not an int
 				return False
 		counter += 1
 
@@ -241,6 +241,7 @@ def getLiteral(unParsedObj, removeQuotes=True, exitIfMeaningless=True):
 
 
 if __name__ == "__main__":
+	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 	"""
 	STEP 1: EVALUATE ARGUMENTS
 	We read through system arguments passed to the interpreter to decide how to run our code.
@@ -249,13 +250,13 @@ if __name__ == "__main__":
 	try:
 		script = args[1]  # the location of the script to run
 	except IndexError:  # not specified
-		error.warn("No input file specified, assuming ./script.hx")
+		error.warn("No input file specified, assuming ./script.hx", currentLine)
 		script = "script.hx"
 	try:
 		writeOut = args[2].lower()  # do we write the meaning of the script to a python file or run it?
 		writeOut = True if writeOut == "true" else False  # if the user says "true" set writeOut to True, otherwise False
 	except IndexError:  # not specified
-		error.warn("WriteOut not specified, assuming False")
+		error.warn("WriteOut not specified, assuming False", currentLine)
 		writeOut = False
 
 
@@ -268,9 +269,9 @@ if __name__ == "__main__":
 		with open(script, "r") as f:
 			tasks = f.read().split("\n")  # create task list by splitting on newlines
 	except FileNotFoundError:  # no such file!
-		error.error("File " + script + "not found")
+		error.error("File " + script + "not found", currentLine)
 	except:
-		error.error("Generic error reading file" + script)
+		error.error("Generic error reading file" + script, currentLine)
 
 
 
@@ -293,7 +294,6 @@ if __name__ == "__main__":
 	"""
 	STEP 4: START PARSING
 	"""
-	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 	try:
 		while currentLine < len(tasks):  # While the line we're on is not the last:
 			parse(tasks[currentLine])  # parse the task at the current line in tasks

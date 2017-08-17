@@ -171,7 +171,7 @@ def parse(task):
 def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 	import re  # we need regex to determine what is a variable and what is a literal
 	import itertools
-	regex = '[$#]\w*'  # https://regex101.com/r/is4StU/2 for explanation
+	regex = '[$#]\w*'  # https://regex101.com/r/is4StU/4 for explanation
 
 
 	variables = re.findall(regex, objList)  # list of variables

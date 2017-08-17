@@ -241,7 +241,6 @@ def getLiteral(unParsedObj, removeQuotes=True, exitIfMeaningless=True):
 
 
 if __name__ == "__main__":
-	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 	"""
 	STEP 1: EVALUATE ARGUMENTS
 	We read through system arguments passed to the interpreter to decide how to run our code.
@@ -294,6 +293,7 @@ if __name__ == "__main__":
 	"""
 	STEP 4: START PARSING
 	"""
+	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 	try:
 		while currentLine < len(tasks):  # While the line we're on is not the last:
 			parse(tasks[currentLine])  # parse the task at the current line in tasks

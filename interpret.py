@@ -95,14 +95,11 @@ def parse(task):
 		clause = clause.split(" ")  #["$hello", "==", ""hi""]
 		counter = 0
 		for part in clause:  # for every item in list ["$hello", "==", ""hi""]
-			for prefix in prefixes:
-				if part.startswith(prefix):
-					if prefix == "$":
-						clause[counter] = '"' + str(exec.usrvars[part]) + '"'  # It's a string so give it quotes, also see else
-					else:
-						clause[counter] = str(exec.usrvars[part])  # replace variables with values - ["hi", "==", ""hi""]
-		counter += 1
-		clause = " ".join(clause)  # ""hi" == "hi""
+			literal = getLiteral(part, removeQuotes=False, exitIfMeaningless=False)
+			clause[counter] = getLiteral(part, removeQuotes=False, exitIfMeaningless=False) if literal is not False else clause[counter]
+			# getLiteral returns False if it couldn't make sense of it. basically this ignores stupid stuff. story of my life.
+			counter += 1
+		clause = " ".join(str(clause))  # ""hi" == "hi""
 
 		clauseCheck = eval(clause)  # use Python's boolean evaluation and store bool result in clauseCheck
 
@@ -171,46 +168,49 @@ def parse(task):
 
 
 
-def getLiteralList(objList):
+def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 	import re  # we need regex to determine what is a variable and what is a literal
 	import itertools
 	regex = '[$#]\w*'  # https://regex101.com/r/is4StU/2 for explanation
 
 
 	variables = re.findall(regex, objList)  # list of variables
-	print("Variables: " + str(variables))
 	counter = 0
-	for var in variables: variables[counter] = exec.usrvars[var]  # replace the variable names with the values
+	for var in variables:
+		var = exec.usrvars[var]
+		if isinstance(var, str):  # it's a string
+			var = var if removeQuotes else '"' + var + '"'  # if not removeQuotes, add quotes to each end
+
+		variables[counter] = var  # replace the variable names with the values
+		counter += 1
 
 
 	literals = re.split(regex, objList)  # list of literals
-	print("Literals1: " + str(literals))
 	counter = 0
 	listStartsWith = 0  # so we know how to properly merge the 2 lists once we're done
 	modLiterals = []  # we will modify this in the for loop to prevent interference when removing list items
 
 	for obj in literals:  # sometimes we get empty strs with the literal split, this removes them
 		literals[counter] = obj.strip(" ")  # remove any spaces at the start or end
-		if obj != "":
+		if obj != "" and obj != None:
 			modLiterals.append(literals[counter])  # only append if it's not empty
 		else:
 			listStartsWith += 1  # it's empty so we can increment it - trust my logic on this
 		counter += 1
 	literals = modLiterals  # update variabes safely outside the for loop
-	print("Literals2: " + str(literals))
 
 	if listStartsWith > 0: listStartsWith = "lit"  # trust my logic!
 
 	counter = 0
 	for obj in literals:
-		print(obj)
 		if obj.startswith('"') and obj.endswith('"'):  # it's a string
-			literals[counter] = obj.strip('"')  # remove any quotes from front and back
+			literals[counter] = obj.strip('"') if removeQuotes else obj  # remove any quotes from front and back
 		else:  # it's either an int or unrecognised
 			try:
 				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
 			except ValueError:
-				error.error("Could not get anything meaningful from " + obj)  # not a string, not an int
+				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, doExit=False)  # not a string, not an int
+				return False
 		counter += 1
 
 
@@ -221,8 +221,11 @@ def getLiteralList(objList):
 
 
 
-def getLiteral(unParsedObj):
-	return getLiteralList(unParsedObj)[0]  # for getting one result only
+def getLiteral(unParsedObj, removeQuotes=True, exitIfMeaningless=True):
+	try:
+		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)[0]  # for getting one result only
+	except TypeError:  # it returns 'false'
+		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)
 
 
 

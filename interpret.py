@@ -136,7 +136,7 @@ def parse(task):
 			task = task[7:]
 			action = "append"
 
-		exec.flop(action, task)  # pass to flop with the action and the parameter (str, path or nothing)
+		exec.flop(action, task)  # pass to flop with the action and the parameter (str that is either path or nothing)
 
 
 	elif task.startswith("nop"):

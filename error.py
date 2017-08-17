@@ -1,5 +1,5 @@
 # haxxor by @DyingEcho
-# Copyright ©2017 @DyingEcho. Some rights reserved.
+# Copyright ©2017 @DyingEcho. All rights reserved.
 
 def error(msg, line, doExit=True):
 	print("ERROR (ln " + str(line) + "): " + msg)

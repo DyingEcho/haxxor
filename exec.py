@@ -1,5 +1,5 @@
 # haxxor by @DyingEcho
-# Copyright ©2017 @DyingEcho. Some rights reserved.
+# Copyright ©2017 @DyingEcho. All rights reserved.
 # Licensed under the MIT License.
 
 import error

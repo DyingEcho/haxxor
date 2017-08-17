@@ -160,7 +160,7 @@ def parse(task):
 			task = task[4:]
 			action = "mod"
 
-		exec.nop(action, task)  # pass to flop with the action and the parameters
+		exec.nop(action, task)  # pass to nop with the action and the parameters
 
 
 	elif task == "END":

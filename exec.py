@@ -3,7 +3,6 @@
 # Licensed under the MIT License.
 
 import error
-import parse
 
 usrvars = {}
 prefixes = ["$", "#"]

@@ -45,8 +45,12 @@ def wait(length):
 
 
 def strop(opType, origin, param):
+	print(usrvars)
 	if opType == "add":
-		usrvars[origin] = usrvars[origin] + param
+		try:
+			usrvars[origin] = usrvars[origin] + param
+		except KeyError:
+			error.error("Parameter 0 to 'strop add' must be a string variable", 0)
 
 
 def flop(action, param):

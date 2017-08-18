@@ -29,30 +29,36 @@ def decide(task):
 
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
-		task = task[5:]
+		task = task[5:]  # remove 'assn ' from start
 		if task.startswith("str"):  # it's a string
-			task = task[4:]
+			task = task[4:]  # remove 'str ' from start
 			vartype = "str"
+			task = task.split(' ', 1)  # the first space will separate the name and the value
+
 		elif task.startswith("int"):  # it's an integer
-			task = task[4:]
+			task = task[4:]  # remove 'int ' from start
 			vartype = "int"
+			task = task.split(' ', 1)  # the first space will separate the name and the value
+
 		elif task.startswith("in"):  # we need user input for a string
-			task = task[3:]
+			task = task[3:]  # remove 'in ' from start
 			vartype = "in"
+			task = task.split(' ', 1)  # the first space will separate the name and the value
+
 		elif task.startswith("del"):  # deletes a variable
-			task = task[4:]
-			vartype = "del"
+			task = task[4:]  # remove 'del ' from start
+			exec.assn('del', task, '')  # the procedure is different from all the others
+			return                      # so it's best to have del work slightly differently
+
 		else:
 			error.error("Type to assign not recognised!", currentLine)
 
-		task = task.split(' "') if vartype != "int" else task.split(" ")  # split by space if type is int, otherwise by "
-		task[1] = '"' + task[1] if vartype == "str" else task[1]  # replace the quote that was removed in the above split
 		name = task[0]  # name of the variable
-		value = parse.getLiteral(task[1]) if vartype != "del" else ""  # get literal of task[1] if type isn't del, assign to value
+		value = parse.getLiteral(task[1])  # get literal of task[1], assign to value
 		exec.assn(vartype, name, value)  # pass to exec.assn()
 
 
-	elif task.startswith("wait"):  # waits for a certain amount of time TODO: Make this work with variables
+	elif task.startswith("wait"):  # waits for a certain amount of time
 		task = task[5:]  # remove 'wait ' from start of task
 		length = parse.getLiteral(task)  # get the literal int of the time to wait
 		exec.wait(length)  # pass to exec.wait()
@@ -67,12 +73,7 @@ def decide(task):
 			error.error("Strop command not recognised.", currentLine)
 
 		task = task.split(" ", 1)
-		try:
-			origin = exec.usrvars[task[0]]  # doing this without getLiteral() because it HAS to be a variable
-		except KeyError:
-			error.error("Parameter 0 to 'strop add' must be a string variable", currentLine)
-
-		exec.strop(opType, origin, parse.getLiteralList(task[1]))  # third param here is the literal form of the second strop add param
+		exec.strop(opType, task[0], parse.getLiteral(task[1]))  # third param here is the literal form of the second strop add param
 
 
 	elif task.startswith("goto"):
@@ -80,6 +81,10 @@ def decide(task):
 		task = task.split(" ")
 		goToLine = int(tags[task[1]])
 		currentLine = goToLine  # Change the line the interpreter is reading
+
+
+	elif task.startswith("tag"):
+		pass  # already dealt with
 
 
 	elif task.startswith("if"):
@@ -144,7 +149,6 @@ def decide(task):
 		else:
 			error.error("Unknown action to flop: " + task, currentLine)
 
-		exec.flop(action, task)  # pass to flop with the action and the parameter (str that is either path or nothing)
 
 
 	elif task.startswith("nop"):

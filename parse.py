@@ -1,6 +1,7 @@
 # haxxor by @DyingEcho
 # Copyright ©2017 @DyingEcho. All rights reserved.
 import error
+import exec
 from interpret import currentLine
 
 
@@ -13,7 +14,10 @@ def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 	variables = re.findall(regex, objList)  # list of variables
 	counter = 0
 	for var in variables:
-		var = exec.usrvars[var]
+		try:
+			var = exec.usrvars[var]
+		except KeyError:
+			error.error("Could not find variable " + var, currentLine)
 		if isinstance(var, str):  # it's a string
 			var = var if removeQuotes else '"' + var + '"'  # if not removeQuotes, add quotes to each end
 

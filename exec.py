@@ -45,7 +45,6 @@ def wait(length):
 
 
 def strop(opType, origin, param):
-	print(usrvars)
 	if opType == "add":
 		try:
 			usrvars[origin] = usrvars[origin] + param

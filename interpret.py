@@ -25,7 +25,10 @@ def decide(task):
 
 	if task.startswith("disp"):  # displays a string
 		task = task[5:]  # remove 'disp ' from start
-		exec.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
+		try:
+			exec.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
+		except IndexError:  # list index out of range - means that it's completely empty
+			exec.disp("")
 
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
@@ -110,7 +113,13 @@ def decide(task):
 			clause[counter] = parse.getLiteral(part, removeQuotes=False, exitIfMeaningless=False) if literal is not False else clause[counter]
 			# parse.getLiteral returns False if it couldn't make sense of it. basically this ignores stupid stuff. story of my life.
 			counter += 1
-		clause = " ".join(str(clause))  # ""hi" == "hi""
+
+		#clause = "".join(str(clause))  # ["hi", "==", "hi"]
+		finalClause = ""
+		for part in clause:
+			finalClause += part + " "
+
+		clause = ''.join(clause)
 
 		clauseCheck = eval(clause)  # use Python's boolean evaluation and store bool result in clauseCheck
 
@@ -243,6 +252,7 @@ if __name__ == "__main__":
 	currentLine = 0  # Reset to 0 due to its use in the original scan of the file for tags
 	try:
 		while currentLine < len(tasks):  # While the line we're on is not the last:
+			#print("Got to " + str(currentLine)) # DEBUG
 			decide(tasks[currentLine])  # decide the task at the current line in tasks
 			currentLine += 1  # Move on to the next line
 	except KeyboardInterrupt:

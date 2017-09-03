@@ -2,7 +2,6 @@
 # Copyright ©2017 @DyingEcho. All rights reserved.
 
 import sys
-
 import error
 import exec
 import parse
@@ -64,6 +63,7 @@ def decide(task):
 	elif task.startswith("wait"):  # waits for a certain amount of time
 		task = task[5:]  # remove 'wait ' from start of task
 		length = parse.getLiteral(task)  # get the literal int of the time to wait
+		if not isinstance(length, int): error.error("Argument to wait must be an int! ", currentLine)
 		exec.wait(length)  # pass to exec.wait()
 
 
@@ -82,7 +82,10 @@ def decide(task):
 	elif task.startswith("goto"):
 		global tags
 		task = task.split(" ")
-		goToLine = int(tags[task[1]])
+		try:
+			goToLine = int(tags[task[1]])
+		except KeyError:
+			error.error("Can't find tag " + task[1], currentLine)
 		currentLine = goToLine  # Change the line the interpreter is reading
 
 
@@ -116,11 +119,12 @@ def decide(task):
 
 		finalClause = ""
 		for part in clause:
-			finalClause += part + " "
+			finalClause += str(part) + " "
 
-		clause = ' '.join(clause)
-
-		clauseCheck = eval(clause)  # use Python's boolean evaluation and store bool result in clauseCheck
+		try:
+			clauseCheck = eval(finalClause)  # use Python's boolean evaluation and store bool result in clauseCheck
+		except:
+			error.error("Didn't understand what you meant by '" + clause + "'.", currentLine)
 
 		if clauseCheck:
 			lastEval = True

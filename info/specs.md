@@ -84,12 +84,6 @@ Concatenate strings like this:
  ```
 where `$b` is the string you want to add to the end of `$a`.
 
-
-
-strop add $nameis $name
-assn del name
-disp $nameis
-
 ## Gotos and Tags
 ### Tags
 Tags can be added like this:

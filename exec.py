@@ -73,3 +73,18 @@ def flop(action, param):
 		fileContent = file.read()
 		fileContent = fileContent + "\n" + param
 		file.write(fileContent)
+
+
+def nop(action, origin, param):
+	if action == "add":
+		usrvars[origin] = usrvars[origin] + param
+	elif action == "sub":
+		usrvars[origin] = usrvars[origin] - param
+	elif action == "div":
+		usrvars[origin] = usrvars[origin] / param
+	elif action == "mult":
+		usrvars[origin] = usrvars[origin] * param
+	elif action == "exp":
+		usrvars[origin] = usrvars[origin] ^ param
+	elif action == "mod":
+		usrvars[origin] = usrvars[origin] % param

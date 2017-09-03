@@ -114,12 +114,11 @@ def decide(task):
 			# parse.getLiteral returns False if it couldn't make sense of it. basically this ignores stupid stuff. story of my life.
 			counter += 1
 
-		#clause = "".join(str(clause))  # ["hi", "==", "hi"]
 		finalClause = ""
 		for part in clause:
 			finalClause += part + " "
 
-		clause = ''.join(clause)
+		clause = ' '.join(clause)
 
 		clauseCheck = eval(clause)  # use Python's boolean evaluation and store bool result in clauseCheck
 
@@ -165,25 +164,27 @@ def decide(task):
 		if task.startswith("add"):
 			task = task[4:]
 			action = "add"
-		if task.startswith("sub"):
+		elif task.startswith("sub"):
 			task = task[4:]
 			action = "sub"
-		if task.startswith("div"):
+		elif task.startswith("div"):
 			task = task[4:]
 			action = "div"
-		if task.startswith("mult"):
+		elif task.startswith("mult"):
 			task = task[5:]
 			action = "mult"
-		if task.startswith("exp"):
+		elif task.startswith("exp"):
 			task = task[4:]
 			action = "exp"
-		if task.startswith("mod"):
+		elif task.startswith("mod"):
 			task = task[4:]
 			action = "mod"
 		else:
 			error.error("Unknown action to nop: " + task, currentLine)
 
-		exec.nop(action, task)  # pass to nop with the action and the parameters
+		task = task.split(" ", 1)  # get the two things to operate on
+
+		exec.nop(action, task[0], parse.getLiteral(task[1]))  # pass to nop with the action and the parameters
 
 
 	elif task == "END":

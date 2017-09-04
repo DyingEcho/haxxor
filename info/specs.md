@@ -10,7 +10,7 @@ where `myString` is the text you want printed.
 You can also use
 ```
 disp $myStr
-disp #myInt
+disp #myNum
 ```
 
 ### Variables
@@ -22,10 +22,10 @@ assn str myVar "myString"
 
 where `myVar` is the variable name (will be `$myVar`) and `"myString"` is what it contains.
 
-#### Integers
-Integers are assigned like this:
+#### Numbers
+Numbers are assigned like this:
 ```
-assn int myVar 42
+assn num myVar 42
 ```
 where `myVar` is the variable name (will be `#myVar`) and it contains 42.
 
@@ -133,3 +133,38 @@ Finally, it's important to close files once you're finished working on them.
 ```
 flop close
 ```
+
+# Number Operations
+You can perform number operations with `nop`.
+
+## Adding
+You can add numbers like so:
+```
+assn num myNum 5
+nop add #myNum 3
+```
+This will result in `#myNum` becoming 8, because we added 3 to it.
+
+## Subtracting
+You can subtract numbers like so:
+```
+assn num myNum 5
+nop sub #myNum 3
+```
+This will result in `#myNum` becoming 2, because we subtracted 3 from it.
+
+## Multiplying
+You can multiply numbers like so:
+```
+assn num myNum 5
+nop mult #myNum 3
+```
+This will result in `#myNum` becoming 15, because we multiplied it by 3.
+
+## Dividing
+You can divide numbers like so:
+```
+assn num myNum 5
+nop div #myNum 5
+```
+This will result in `#myNum` becoming 1, because we divided it by 5.

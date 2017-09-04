@@ -45,12 +45,15 @@ def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 	for obj in literals:
 		if obj.startswith('"') and obj.endswith('"'):  # it's a string
 			literals[counter] = obj.strip('"') if removeQuotes else obj  # remove any quotes from front and back
-		else:  # it's either an int or unrecognised
+		else:  # it's either an int, float or unrecognised
 			try:
 				literals[counter] = int(obj)  # try to int() it, if it's impossible we get ValueError
 			except ValueError:
-				if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, currentLine, doExit=False)  # not a string, not an int
-				return False
+				try:
+					literals[counter] = float(obj)  # try to float() it, if it's impossible we get ValueError
+				except ValueError:
+					if exitIfMeaningless: error.error("Could not get anything meaningful from " + obj, currentLine, doExit=False)  # not a string, not an int
+					return False
 		counter += 1
 
 

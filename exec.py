@@ -27,8 +27,8 @@ def assn(vartype, name, value):
 		if not isinstance(value, str): error.error("Can't assign a non-string as 'str'!", 0)
 		usrvars["$" + name] = value
 
-	if vartype == "int":
-		if not isinstance(value, int): error.error("Can't assign a non-int as 'int'!", 0)
+	if vartype == "num":
+		if not isinstance(value, int) and not isinstance(value, float): error.error("Can't assign a non-int as 'int'!", 0)
 		usrvars["#" + name] = value
 
 	if vartype == "in":

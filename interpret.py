@@ -37,9 +37,9 @@ def decide(task):
 			vartype = "str"
 			task = task.split(' ', 1)  # the first space will separate the name and the value
 
-		elif task.startswith("int"):  # it's an integer
+		elif task.startswith("num"):  # it's a number
 			task = task[4:]  # remove 'int ' from start
-			vartype = "int"
+			vartype = "num"
 			task = task.split(' ', 1)  # the first space will separate the name and the value
 
 		elif task.startswith("in"):  # we need user input for a string

@@ -146,20 +146,22 @@ def decide(task):
 		if task.startswith("open"):
 			task = task[5:]
 			action = "open"
-		if task.startswith("close"):
+		elif task.startswith("close"):
 			task = task[6:]
 			action = "close"
-		if task.startswith("read"):
+		elif task.startswith("read"):
 			task = task[5:]
 			action = "read"
-		if task.startswith("owrite"):
+		elif task.startswith("owrite"):
 			task = task[7:]
 			action = "owrite"
-		if task.startswith("append"):
+		elif task.startswith("append"):
 			task = task[7:]
 			action = "append"
 		else:
 			error.error("Unknown action to flop: " + task, currentLine)
+
+		exec.flop(action, task)
 
 
 

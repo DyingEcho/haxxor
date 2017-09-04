@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 
 import error
+import parse
 
 usrvars = {}
 prefixes = ["$", "#"]
@@ -64,22 +65,28 @@ def flop(action, param):
 	global prefixes
 	global file
 
-	if action == "open":
-		file = open(param, "a+")
+	try:
+		if action == "open":
+			file = open(param, "a+")
 
-	elif action == "close":
-		file.close()
+		elif action == "close":
+			file.close()
 
-	elif action == "read":
-		usrvars[param] = file.read()
+		elif action == "read":
+			usrvars[param] = file.read()
 
-	elif action == "owrite":
-		file.write(param)
+		elif action == "owrite":
+			file.write(param)
 
-	elif action == "append":
-		fileContent = file.read()
-		fileContent = fileContent + "\n" + param
-		file.write(fileContent)
+		elif action == "append":
+			fileContent = file.read()
+			try:
+				fileContent = fileContent + "\n" + parse.getLiteral(param)
+			except TypeError:
+				error.error("Can't understand what to write!", 0)
+			file.write(fileContent)
+	except FileNotFoundError:
+		error.error("No such file!", 0)
 
 
 def nop(action, origin, param):

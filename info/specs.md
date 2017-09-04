@@ -165,6 +165,6 @@ This will result in `#myNum` becoming 15, because we multiplied it by 3.
 You can divide numbers like so:
 ```
 assn num myNum 5
-nop div #myNum 5
+nop div #myNum 3
 ```
-This will result in `#myNum` becoming 1, because we divided it by 5.
+This will result in `#myNum` becoming _1.6˙_, because we divided it by 5.

@@ -2,7 +2,7 @@
 #haxxor by @DyingEcho
 # Copyright ©2017 @DyingEcho. All rights reserved.
 
-import sys
+from sys import exit, argv
 import error
 import executor
 import parse
@@ -23,7 +23,6 @@ def decide(task):
 	global currentLine
 
 	if task.startswith("disp"):  # displays a string
-		from exec import usrvars
 		task = task[5:]  # remove 'disp ' from start
 		try:
 			param = parse.getLiteral(task)
@@ -32,10 +31,10 @@ def decide(task):
 				ret = "|"
 				for item in param:
 					ret += str(item) + "|"
-				exec.disp(ret)
+				executor.disp(ret)
 				return
 
-			exec.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
+			executor.disp(parse.getLiteral(task))  # Pass literal to executor.disp()
 		except IndexError:  # list index out of range - means that it's completely empty
 			executor.disp("")
 
@@ -54,7 +53,7 @@ def decide(task):
 
 		elif task.startswith("lst"):  # it's a list
 			task = task[4:]  # remove 'lst ' from start of task
-			exec.assn("lst", task, '')
+			executor.assn("lst", task, '')
 			return
 
 		elif task.startswith("in"):  # we need user input for a string
@@ -72,14 +71,14 @@ def decide(task):
 
 		name = task[0]  # name of the variable
 		value = parse.getLiteral(task[1])  # get literal of task[1], assign to value
-		executor.assn(vartype, name, value)  # pass to exec.assn()
+		executor.assn(vartype, name, value)  # pass to executor.assn()
 
 
 	elif task.startswith("wait"):  # waits for a certain amount of time
 		task = task[5:]  # remove 'wait ' from start of task
 		length = parse.getLiteral(task)  # get the literal int of the time to wait
 		if not isinstance(length, int): error.error("Argument to wait must be an int! ", currentLine)
-		executor.wait(length)  # pass to exec.wait()
+		executor.wait(length)  # pass to executor.wait()
 
 
 	elif task.startswith("strop"):  # string operations
@@ -223,7 +222,7 @@ def decide(task):
 
 		task = task.split(" ", 1)  # get the 2 things to operate on
 
-		exec.lop(action, task[0], task[1])  # pass to lop with the action and the parameters
+		executor.lop(action, task[0], task[1])  # pass to lop with the action and the parameters
 
 
 	elif task == "END":
@@ -241,7 +240,7 @@ if __name__ == "__main__":
 	STEP 1: EVALUATE ARGUMENTS
 	We read through system arguments passed to the interpreter to decide how to run our code.
 	"""
-	args = sys.argv  # get a string with everything after the command to run this interpreter
+	args = argv  # get a string with everything after the command to run this interpreter
 	try:
 		script = args[1]  # the location of the script to run
 	except IndexError:  # not specified

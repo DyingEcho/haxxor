@@ -134,10 +134,10 @@ Finally, it's important to close files once you're finished working on them.
 flop close
 ```
 
-# Number Operations
+## Number Operations
 You can perform number operations with `nop`.
 
-## Adding
+### Adding
 You can add numbers like so:
 ```
 assn num myNum 5
@@ -145,7 +145,7 @@ nop add #myNum 3
 ```
 This will result in `#myNum` becoming 8, because we added 3 to it.
 
-## Subtracting
+### Subtracting
 You can subtract numbers like so:
 ```
 assn num myNum 5
@@ -153,7 +153,7 @@ nop sub #myNum 3
 ```
 This will result in `#myNum` becoming 2, because we subtracted 3 from it.
 
-## Multiplying
+### Multiplying
 You can multiply numbers like so:
 ```
 assn num myNum 5
@@ -161,7 +161,7 @@ nop mult #myNum 3
 ```
 This will result in `#myNum` becoming 15, because we multiplied it by 3.
 
-## Dividing
+### Dividing
 You can divide numbers like so:
 ```
 assn num myNum 5

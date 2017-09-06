@@ -18,9 +18,6 @@ def disp(text):
 
 def assn(vartype, name, value):
 	# Because this sets a variable that doesn't already exist, we have to do it the clunky way instead of getLiteral()
-	global usrvars
-	global prefixes
-
 	for prefix in prefixes:
 		if name.startswith(prefix) and vartype != "del": error.warn("Variable name contains special character!", 0)
 
@@ -62,10 +59,6 @@ def strop(opType, origin, param):
 
 
 def flop(action, param):
-	global usrvars
-	global prefixes
-	global file
-
 	try:
 		if action == "open":
 			file = open(param, "a+")

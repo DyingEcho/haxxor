@@ -68,5 +68,5 @@ def getLiteral(unParsedObj, removeQuotes=True, exitIfMeaningless=True):
 		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)[0]  # for getting one result only
 	except TypeError:  # it returns 'false'
 		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)
-	except ValueError:  # list index out of range: user tried to assign a 0
+	except (IndexError, ValueError):  # list index out of range: user tried to assign a 0
 		return 0

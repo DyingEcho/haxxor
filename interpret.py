@@ -222,7 +222,7 @@ def decide(task):
 		else:
 			error.error("Unknown action to lop: " + task, currentLine)
 
-		task = task.split(" ", 2)  # get the 3 things to operate on
+		task = task.split(" ", 1)  # get the 2 things to operate on
 
 		exec.lop(action, task[0], task[1])  # pass to lop with the action and the parameters
 

@@ -23,9 +23,19 @@ def decide(task):
 	global currentLine
 
 	if task.startswith("disp"):  # displays a string
+		from exec import usrvars
 		task = task[5:]  # remove 'disp ' from start
 		try:
-			executor.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
+			param = parse.getLiteral(task)
+
+			if isinstance(param, list):
+				ret = "|"
+				for item in param:
+					ret += str(item) + "|"
+				exec.disp(ret)
+				return
+
+			exec.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
 		except IndexError:  # list index out of range - means that it's completely empty
 			executor.disp("")
 
@@ -41,6 +51,11 @@ def decide(task):
 			task = task[4:]  # remove 'int ' from start
 			vartype = "num"
 			task = task.split(' ', 1)  # the first space will separate the name and the value
+
+		elif task.startswith("lst"):  # it's a list
+			task = task[4:]  # remove 'lst ' from start of task
+			exec.assn("lst", task, '')
+			return
 
 		elif task.startswith("in"):  # we need user input for a string
 			task = task[3:]  # remove 'in ' from start
@@ -192,6 +207,25 @@ def decide(task):
 		executor.nop(action, task[0], parse.getLiteral(task[1]))  # pass to nop with the action and the parameters
 
 
+	elif task.startswith("lop"):
+		task = task[4:]  # remove 'lop ' from start of task
+		if task.startswith("append"):
+			task = task[7:]
+			action = "append"
+		elif task.startswith("pop"):
+			task = task[4:]
+			action = "pop"
+		elif task.startswith("ins"):
+			task = task[4:]
+			action = "ins"
+		else:
+			error.error("Unknown action to lop: " + task, currentLine)
+
+		task = task.split(" ", 1)  # get the 2 things to operate on
+
+		exec.lop(action, task[0], task[1])  # pass to lop with the action and the parameters
+
+
 	elif task == "END":
 		exit()
 
@@ -259,7 +293,7 @@ if __name__ == "__main__":
 	try:
 		while currentLine < len(tasks):  # While the line we're on is not the last:
 			#print("Got to " + str(currentLine)) # DEBUG
-			decide(tasks[currentLine])  # decide the task at the current line in tasks
+			decide(tasks[currentLine].strip(" "))  # decide the task at the current line in tasks
 			currentLine += 1  # Move on to the next line
 	except KeyboardInterrupt:
 		exit()

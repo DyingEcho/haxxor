@@ -9,7 +9,7 @@ from interpret import currentLine
 def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 	import re  # we need regex to determine what is a variable and what is a literal
 	import itertools
-	regex = '[$#]\w*'  # https://regex101.com/r/is4StU/4 for explanation
+	regex = '[$#=]\w*'  # https://regex101.com/r/is4StU/4 for explanation
 
 
 	variables = re.findall(regex, objList)  # list of variables
@@ -69,5 +69,5 @@ def getLiteral(unParsedObj, removeQuotes=True, exitIfMeaningless=True):
 		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)[0]  # for getting one result only
 	except TypeError:  # it returns 'false'
 		return getLiteralList(unParsedObj, removeQuotes=removeQuotes, exitIfMeaningless=exitIfMeaningless)
-	except ValueError:  # list index out of range: user tried to assign a 0
+	except (IndexError, ValueError):  # list index out of range: user tried to assign a 0
 		return 0

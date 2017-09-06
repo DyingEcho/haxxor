@@ -1,4 +1,6 @@
 # haxxor
+[![Code Health](https://landscape.io/github/DyingEcho/haxxor/master/landscape.svg?style=flat-square)](https://landscape.io/github/DyingEcho/haxxor/master)
+
 Haxxor is a programming language I'm making for fun. Eventually it'll be Turing Complete... -ish.
 
 ## Running haxxor code

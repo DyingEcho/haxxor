@@ -2,7 +2,7 @@
 #haxxor by @DyingEcho
 # Copyright ©2017 @DyingEcho. All rights reserved.
 import error
-import exec
+import executor
 from interpret import currentLine
 
 
@@ -16,7 +16,7 @@ def getLiteralList(objList, removeQuotes=True, exitIfMeaningless=True):
 	counter = 0
 	for var in variables:
 		try:
-			var = exec.usrvars[var]
+			var = executor.usrvars[var]
 		except KeyError:
 			error.error("Could not find variable " + var, currentLine)
 		if isinstance(var, str):  # it's a string

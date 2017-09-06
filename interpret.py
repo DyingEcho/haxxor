@@ -4,7 +4,7 @@
 
 import sys
 import error
-import exec
+import executor
 import parse
 
 tags = {}  # dictionary of tags. key is name, value is line number.
@@ -20,15 +20,14 @@ currentLine = 0
 PARSER FOR COMMANDS BELOW, FOR INITIAL LOGIC SCROLL FURTHER DOWN
 """
 def decide(task):
-	global prefixes
 	global currentLine
 
 	if task.startswith("disp"):  # displays a string
 		task = task[5:]  # remove 'disp ' from start
 		try:
-			exec.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
+			executor.disp(parse.getLiteral(task))  # Pass literal to exec.disp()
 		except IndexError:  # list index out of range - means that it's completely empty
-			exec.disp("")
+			executor.disp("")
 
 
 	elif task.startswith("assn"):  # assigns/deletes a variable
@@ -50,7 +49,7 @@ def decide(task):
 
 		elif task.startswith("del"):  # deletes a variable
 			task = task[4:]  # remove 'del ' from start
-			exec.assn('del', task, '')  # the procedure is different from all the others
+			executor.assn('del', task, '')  # the procedure is different from all the others
 			return                      # so it's best to have del work slightly differently
 
 		else:
@@ -58,14 +57,14 @@ def decide(task):
 
 		name = task[0]  # name of the variable
 		value = parse.getLiteral(task[1])  # get literal of task[1], assign to value
-		exec.assn(vartype, name, value)  # pass to exec.assn()
+		executor.assn(vartype, name, value)  # pass to exec.assn()
 
 
 	elif task.startswith("wait"):  # waits for a certain amount of time
 		task = task[5:]  # remove 'wait ' from start of task
 		length = parse.getLiteral(task)  # get the literal int of the time to wait
 		if not isinstance(length, int): error.error("Argument to wait must be an int! ", currentLine)
-		exec.wait(length)  # pass to exec.wait()
+		executor.wait(length)  # pass to exec.wait()
 
 
 	elif task.startswith("strop"):  # string operations
@@ -77,11 +76,10 @@ def decide(task):
 			error.error("Strop command not recognised.", currentLine)
 
 		task = task.split(" ", 1)
-		exec.strop(opType, task[0], parse.getLiteral(task[1]))  # third param here is the literal form of the second strop add param
+		executor.strop(opType, task[0], parse.getLiteral(task[1]))  # third param here is the literal form of the second strop add param
 
 
 	elif task.startswith("goto"):
-		global tags
 		task = task.split(" ")
 		try:
 			goToLine = int(tags[task[1]])
@@ -162,7 +160,7 @@ def decide(task):
 		else:
 			error.error("Unknown action to flop: " + task, currentLine)
 
-		exec.flop(action, task)
+		executor.flop(action, task)
 
 
 
@@ -191,7 +189,7 @@ def decide(task):
 
 		task = task.split(" ", 1)  # get the two things to operate on
 
-		exec.nop(action, task[0], parse.getLiteral(task[1]))  # pass to nop with the action and the parameters
+		executor.nop(action, task[0], parse.getLiteral(task[1]))  # pass to nop with the action and the parameters
 
 
 	elif task == "END":

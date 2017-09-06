@@ -1,4 +1,5 @@
-# haxxor by @DyingEcho
+#!/usr/bin/env python3
+#haxxor by @DyingEcho
 # Copyright ©2017 @DyingEcho. All rights reserved.
 import error
 import exec

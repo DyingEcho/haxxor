@@ -168,3 +168,37 @@ assn num myNum 5
 nop div #myNum 3
 ```
 This will result in `#myNum` becoming _1.6˙_, because we divided it by 5.
+
+## Lists
+Lists are a powerful feature in programming. They can store any number of things, with those things available for access through their indices.
+
+### Creating lists
+Create lists like so:
+```
+assn lst myList
+```
+
+That list can now be accessed through the name `=myList` (`=` being the list prefix).
+
+### Adding items
+A list is only useful if it can be used to store items. Do that like so:
+```
+lop append =myList "Hi!"
+```
+
+Assuming there is a list `=myList`, it will now contain `|"Hi!"|`
+
+### Inserting items
+Let's say there is a list `=myList` that contains `|"hi "|"there!"|`
+We can add to it:
+```
+lop ins =myList 0 "Oh "
+```
+This gives us `|"Oh "|"hi "|"there!"|`.
+
+## Removing items
+Remove items like so:
+```
+lop pop =myList 2
+```
+removes the third item.

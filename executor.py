@@ -18,8 +18,7 @@ def disp(text):
 
 def assn(vartype, name, value):
 	# Because this sets a variable that doesn't already exist, we have to do it the clunky way instead of getLiteral()
-	for prefix in prefixes:
-		if name.startswith(prefix) and vartype != "del": error.warn("Variable name contains special character!", 0)
+	if ' ' in name or '$' in name or '#' in name: error.warn("Variable name contains special character!", 0)
 
 	if vartype == "str":
 		if not isinstance(value, str): error.error("Can't assign a non-string as 'str'!", 0)
@@ -28,6 +27,9 @@ def assn(vartype, name, value):
 	if vartype == "num":
 		if not isinstance(value, int) and not isinstance(value, float): error.error("Can't assign a non-int as 'int'!", 0)
 		usrvars["#" + name] = value
+
+	if vartype == "lst":
+		usrvars["=" + name] = []
 
 	if vartype == "in":
 		usrvars["$" + name] = input(value)
@@ -101,3 +103,26 @@ def nop(action, origin, param):
 		error.error("All parameters to 'nop' must be integers.", 0)
 	except KeyError:
 		error.error("Parameter 1 to 'nop' must be an integer variable.", 0)
+
+
+def lop(action, list, param):
+	if action == "append":
+		try:
+			usrvars[list].append(parse.getLiteral(param))
+		except KeyError:
+			error.error("No such list " + list, 0)
+
+	elif action == "pop":
+		try:
+			usrvars[list].pop(parse.getLiteral(param))
+		except KeyError:
+			error.error("No such list " + list, 0)
+		except IndexError:
+			error.error("List index out of range for " + list + " with " + str(len([usrvars[list]])) + " items.", 0)
+
+	elif action == "ins":
+		param = param.split(" ", 1)
+		try:
+			usrvars[list].insert(parse.getLiteral(param[0]), parse.getLiteral(param[1]))
+		except KeyError:
+			error.error("No such list " + list, 0)
